@@ -24,7 +24,7 @@
 
 <body>
 
-  <model-viewer src="models/winged-victory.glb" id="victory" alt="A 3D model of the Winged Victory of Samothrace, seen from a slowly orbiting camera" camera-orbit="-30deg 93deg 150m" min-camera-orbit="auto auto 0m" max-camera-orbit="auto auto 300m" field-of-view="6.2deg" min-field-of-view="2deg" max-field-of-view="auto" camera-target="-7.3m 37m 9.5m" interpolation-decay="0" shadow-intensity="1.8" exposure="1" tone-mapping="aces" environment-image="models/key-light.hdr">
+  <model-viewer src="models/winged-victory.glb" id="victory" alt="A 3D model of the Winged Victory of Samothrace, seen from a slowly orbiting camera" camera-orbit="-30deg 93deg 150m" min-camera-orbit="auto auto 0m" max-camera-orbit="auto auto 300m" field-of-view="4.4deg" min-field-of-view="2deg" max-field-of-view="auto" camera-target="-7.3m 37m 9.5m" interpolation-decay="0" shadow-intensity="1.8" exposure="1" tone-mapping="aces" environment-image="models/key-light.hdr">
   </model-viewer>
 
   <div class="loader">
@@ -32,6 +32,12 @@
   </div>
 
   <script>
+    // Keep full resolution: by default model-viewer drops to as little as a
+    // quarter-res render when frames slow down, which softens the scan detail.
+    customElements.whenDefined('model-viewer').then(() => {
+      customElements.get('model-viewer').minimumRenderScale = 1;
+    });
+
     // The statue stays put; the camera circles it on a slightly tilted orbit
     // that dips lowest in front of the figure and rises behind it.
     const victory = document.getElementById('victory');
@@ -39,7 +45,7 @@
     const FRONT = -30;       // orbit angle that faces the statue head-on
     const BASE_PITCH = 85;   // camera angle down from straight overhead
     const TILT = 8;          // +/- swing of that angle around the orbit
-    const RADIUS = '150m';   // far back on a long lens: belly to mid-wing
+    const RADIUS = '150m';   // far back on a long (4.4deg) lens for a tight crop
 
     function orbitAt(theta) {
       const pitch = BASE_PITCH + TILT * Math.cos((theta - FRONT) * Math.PI / 180);
