@@ -407,6 +407,20 @@ model-viewer#victory {
 }
 
 /* --------------------------------------------------------------------------
+   Key-light falloff: the light pools on the torso and the frame edges drop
+   away, like a tight spot. model-viewer has no real spotlight, and a smaller
+   light source barely changes matte stone, so the falloff is drawn here.
+   -------------------------------------------------------------------------- */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: radial-gradient(ellipse 50% 60% at 50% 45%, transparent 20%, rgba(0, 0, 0, 0.9) 100%);
+}
+
+/* --------------------------------------------------------------------------
    Film grain: monochrome noise over the whole view, re-dealt ~12x a second
    -------------------------------------------------------------------------- */
 body::after {
