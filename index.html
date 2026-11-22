@@ -2,14 +2,11 @@
 <html lang="en">
 
 <head>
-  <!-- Required meta tags -->
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="The work of John Lindmark, a Denver-based Product Design Manager."/>
 
-  <!-- Styles CSS -->
   <link rel="stylesheet" href="css/styles.css">
-  <link href="https://fonts.googleapis.com/css?family=Abril+Fatface" rel="stylesheet">
 
   <!-- So Many Favicons -->
   <link rel="icon" type="image/png" href="images/favicons/favicon16.png" sizes="16x16">
@@ -22,77 +19,24 @@
 
   <title>Lindmark Design</title>
 
+  <script type="module" src="https://unpkg.com/@google/model-viewer@4.4.0/dist/model-viewer.min.js"></script>
 </head>
 
 <body>
 
-  <!-- Protonex Identity -->
-
-  <!-- Orbit Identity -->
-
-  <!-- Project Apollo -->
-
-  <!-- Magpul -->
-
-  <!--<div class="nav-container">
-    <nav class="no-transition" id="sub-nav">
-        <div class="nav-item"><a href="#trgr-mission-section">Mission</a><div class="progress-bar" id="nav-1"></div></div>
-        <div class="nav-item"><a href="#trgr-journey-section">Journey</a><div class="progress-bar" id="nav-2"></div></div>
-        <div class="nav-item last"><a href="#trgr-unity-section">Unity</a><div class="progress-bar" id="nav-3"></div></div>
-    </nav>
-  </div>-->
-
-  <!-- <div class="video-container">
-    <video autoplay muted loop>
-      <source src="video/SDO-trim-3.mp4" type="video/mp4">
-    </video>
-  </div>
-
-  <div class="center-text" id="title">
-    <div id="trgr-title"></div>
-    Lindmark Design
-  </div>
-
- About
-
-  <div class="image-block" id="about-section">
-    <div id="trgr-about-section"></div>
-    <img src="images/svg/JL-logo.svg" id="jl-logo">
-    <div class="text-block">
-      <div class="trgr-in" id="trgr-about-text-in"></div>
-      <div id="about-text">
-        <p>I play well with others.<br>I just want to make cool shit.
-      </div>
-    </div>
-  </div> -->
-
-  <model-viewer src="/models/winged-victory.glb" id="victory" auto-rotate camera-orbit="-136deg 65.56deg 180.7m" min-camera-orbit="auto auto auto" max-camera-orbit="auto auto 180m" min-field-of-view="auto" max-field-of-view="auto" camera-target="2m 25m 1m"  shadow-intensity="1.8" exposure="0.3" environment-image="neutral">
+  <model-viewer src="models/winged-victory.glb" id="victory" alt="A 3D model of the Winged Victory of Samothrace, slowly rotating" auto-rotate camera-orbit="0deg 75deg 105%" min-camera-orbit="auto auto auto" max-camera-orbit="auto auto 180m" min-field-of-view="auto" max-field-of-view="auto" camera-target="2m 25m 1m" shadow-intensity="1.8" exposure="0.3" environment-image="neutral">
   </model-viewer>
 
   <div class="loader">
     <span>In<br>Progress</span>
   </div>
 
-<script
-  src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-  integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/ScrollToPlugin.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/ScrollTrigger.min.js"></script>
-<script type="module">
-
-  // Find the latest version by visiting https://unpkg.com/three. The URL will
-  // redirect to the newest stable release.
-  import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-
-  const scene = new THREE.Scene();
-
-</script>
-<script type="text/javascript" src="js/three.js"></script>
-<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-<!-- <script type="text/javascript" src="js/victory.js"></script> -->
-<script type="text/javascript" src="js/JL-magic.js"></script>
-<script type="text/javascript" src="js/victory-animation.js"></script>
+  <script>
+    // Respect the visitor's reduced-motion setting: hold the statue still.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.getElementById('victory').removeAttribute('auto-rotate');
+    }
+  </script>
 
 </body>
 

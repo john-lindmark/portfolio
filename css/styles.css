@@ -1,21 +1,61 @@
-/* Neutral */
-/* Primary */
-/* Brands */
+/* ==========================================================================
+   Lindmark Design: styles.css
+   Plain CSS, edited by hand (no build step).
+   ========================================================================== */
+
+/* MyFonts webfont license page-view counter for DIN. Must stay the first rule. */
 @import url("//hello.myfonts.net/count/2d7cd4");
+
+:root {
+  /* Neutral: flat grays, black to white */
+  --color-midnight: #000000;
+  --color-coal: #171717;
+  --color-charcoal: #292929;
+  --color-cinder: #585858;
+  --color-ash: #c4c4c4;
+  --color-smoke: #f5f5f5;
+  --color-marshmallow: #ffffff;
+
+  /* Primary */
+  --color-lindy: #11b69d;
+
+  /* Brands */
+  --color-ptx-yellow: #ffea00;
+
+  /* Type */
+  --font-regular: 'DIN-Regular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-bold: 'DIN-Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-condensed: 'din-condensed-web', 'DIN-Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0, 0.48, 0.19, 1.01);
+  --ease-in: cubic-bezier(0.48, 0, 1, 0.19);
+
+  /* Breakpoints (custom properties can't be used inside @media; use these values directly):
+     small 420px, tablet 768px */
+}
+
+/* --------------------------------------------------------------------------
+   Fonts: DIN (MyFonts webfont license, files hosted on Cargo)
+   -------------------------------------------------------------------------- */
+
 @font-face {
   font-family: 'DIN-Bold';
-  src: url("https://files.cargocollective.com/100176/2D7CD4_0_0.eot");
-  src: url("https://files.cargocollective.com/100176/2D7CD4_0_0.eot?#iefix") format("embedded-opentype"), url("https://files.cargocollective.com/100176/2D7CD4_0_0.woff2") format("woff2"), url("https://files.cargocollective.com/100176/2D7CD4_0_0.woff") format("woff"), url("https://files.cargocollective.com/100176/2D7CD4_0_0.ttf") format("truetype"); }
+  src: url("https://files.cargocollective.com/100176/2D7CD4_0_0.woff2") format("woff2"),
+       url("https://files.cargocollective.com/100176/2D7CD4_0_0.woff") format("woff");
+}
 
 @font-face {
   font-family: 'DIN-UltraLight';
-  src: url("https://files.cargocollective.com/100176/2D7CD4_1_0.eot");
-  src: url("https://files.cargocollective.com/100176/2D7CD4_1_0.eot?#iefix") format("embedded-opentype"), url("https://files.cargocollective.com/100176/2D7CD4_1_0.woff2") format("woff2"), url("https://files.cargocollective.com/100176/2D7CD4_1_0.woff") format("woff"), url("https://files.cargocollective.com/100176/2D7CD4_1_0.ttf") format("truetype"); }
+  src: url("https://files.cargocollective.com/100176/2D7CD4_1_0.woff2") format("woff2"),
+       url("https://files.cargocollective.com/100176/2D7CD4_1_0.woff") format("woff");
+}
 
 @font-face {
   font-family: 'DIN-Regular';
-  src: url("https://files.cargocollective.com/100176/2D7CD4_2_0.eot");
-  src: url("https://files.cargocollective.com/100176/2D7CD4_2_0.eot?#iefix") format("embedded-opentype"), url("https://files.cargocollective.com/100176/2D7CD4_2_0.woff2") format("woff2"), url("https://files.cargocollective.com/100176/2D7CD4_2_0.woff") format("woff"), url("https://files.cargocollective.com/100176/2D7CD4_2_0.ttf") format("truetype"); }
+  src: url("https://files.cargocollective.com/100176/2D7CD4_2_0.woff2") format("woff2"),
+       url("https://files.cargocollective.com/100176/2D7CD4_2_0.woff") format("woff");
+}
 
 /*! normalize.css v8.0.0 | MIT License | github.com/necolas/normalize.css */
 /* Document
@@ -316,228 +356,38 @@ template {
 [hidden] {
   display: none; }
 
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
 body {
-  font: 100% "DIN-Regular", Helvetica Neue, Helvetica, Arial, sans-serif;
+  font: 100% var(--font-regular);
   position: relative;
   margin: 0;
-  background-color: #171725;
-  perspective: 100px; }
-
-/* -------------------------------------- */
-/* ------------- Animation -------------- */
-/* -------------------------------------- */
-.icon-container {
-  width: 80%;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  perspective: 400px;
-  overflow: visible; }
-  .icon-container .oneten-mark {
-    width: 30vw;
-    filter: blur(10vw);
-    transform: translateZ(-2000px); }
-  .icon-container .album-club {
-    width: 30vw;
-    margin-right: 5%; }
-  .icon-container .blur-more {
-    position: absolute;
-    top: 0; }
-  .icon-container .aperture {
-    filter: blur(4vw);
-    width: 30vw;
-    position: absolute;
-    transform: translateZ(1000px) rotate3d(1, 0.7, 1, 220deg); }
-
-.far {
-  filter: blur(100vw);
-  transform: translateZ(-20000px); }
-
-.in {
-  filter: blur(0);
-  transform: translateZ(0px); }
-
-.close {
-  filter: blur(200vw);
-  transform: translateZ(10000px); }
-
-.animation-text-start {
-  margin-top: 280px;
-  opacity: 0; }
-  @media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
-    .animation-text-start {
-      opacity: 1; } }
-.animation-text-finish {
-  margin-top: 200px !important;
-  opacity: 1 !important;
-  filter: blur(0px) !important; }
-
-.animation-image-start {
-  margin-top: 280px !important;
-  opacity: 0; }
-
-.animation-image-finish {
-  margin-top: 200px !important;
-  opacity: 1 !important;
-  filter: blur(0px) !important; }
-
-.blur {
-  filter: blur(2vmin) !important;
-  transition: all 1s cubic-bezier(0, 0.48, 0.19, 1.01); }
-  @media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
-    .blur {
-      opacity: 1; } }
-.blur-more {
-  filter: blur(5vmin) !important;
-  transition: all 1s cubic-bezier(0, 0.48, 0.19, 1.01); }
-  @media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
-    .blur-more {
-      opacity: 1; } }
-.no-blur {
-  filter: blur(0vw) !important;
-  transition: all 1s cubic-bezier(0, 0.48, 0.19, 1.01); }
-
-.fade-away {
-  opacity: .1 !important;
-  /*transition: opacity 3s cubic-bezier(0, 0.48, 0.19, 1.01);*/ }
-
-.trgr-above {
-  position: absolute;
-  top: -25vh; }
-
-.trgr-in {
-  position: relative;
-  top: -25vh; }
-
-.trgr-top {
-  position: absolute;
-  top: 0; }
-
-.trgr-center {
-  position: absolute;
-  top: 50%; }
-
-.trgr-bottom {
-  position: absolute;
-  bottom: 0; }
-
-.trgr-out {
-  position: relative;
-  bottom: -40vh; }
-
-/* -------------------------------------- */
-/* ------------- Navigaton -------------- */
-/* -------------------------------------- */
-/* -------------------------------------- */
-/* ----------- Navigaton End ------------ */
-/* -------------------------------------- */
-/* -------------------------------------- */
-/* ------------- Typography ------------- */
-/* -------------------------------------- */
-.text-block {
-  position: relative;
-  display: flex;
-  justify-content: left;
-  align-items: center;
-  max-width: 660px; }
-  .text-block #about-text {
-    color: #ffffff; }
-  @media screen and (max-width: 420px) {
-    .text-block {
-      margin: 35vmin 5vw 50vmin; } }
-  @media screen and (max-width: 768px) {
-    .text-block {
-      margin: 35vmin 5vw 50vmin; } }
-/* -------------------------------------- */
-/* ---------- Typography End ------------ */
-/* -------------------------------------- */
-/* -------------------------------------- */
-/* -------------- Imagery --------------- */
-/* -------------------------------------- */
-.video-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  animation: fade 3s cubic-bezier(0, 0.48, 0.19, 1.01) 1s both; }
-  .video-container video {
-    height: auto;
-    width: auto; }
-
-@-webkit-keyframes fade {
-  0% {
-    opacity: 0; }
-  100% {
-    opacity: 1; } }
-
-@-moz-keyframes fade {
-  0% {
-    opacity: 0; }
-  100% {
-    opacity: 1; } }
-
-@-ms-keyframes fade {
-  0% {
-    opacity: 0; }
-  100% {
-    opacity: 1; } }
+  background-color: var(--color-coal);
+}
 
 @keyframes fade {
-  0% {
-    opacity: 0; }
-  100% {
-    opacity: 1; } }
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
-.center-text {
-  width: 100%;
-  height: 100vh;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #171725;
-  font: 1.5rem/2.5rem "din-condensed-web", "DIN-Bold", Helvetica Neue, Helvetica, Arial, sans-serif;
-  letter-spacing: 30px;
-  text-transform: uppercase;
-  text-align: center;
-  pointer-events: none; }
-  .center-text #trgr-title {
-    position: absolute;
-      position-top: -100px; }
-
-.image-block {
-  width: 100%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center; }
-  #about-section.image-block {
-    height: 100vh;
-    background-image: url("../images/JL-6079.jpg");
-    background-repeat: no-repeat;
-    background-size: cover; }
-    #about-section.image-block #jl-logo {
-      width: 10%;
-      margin-right: 5%; }
-
-@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
-  .ie-hide {
-    display: none; } }
-
+/* --------------------------------------------------------------------------
+   Winged Victory model
+   -------------------------------------------------------------------------- */
 model-viewer#victory {
   pointer-events: none;
   --poster-color: transparent;
   width: 100vw;
   height: 100vh;
-  animation: fade 4s cubic-bezier(0, 0.48, 0.19, 1.01) 3s both;
+  animation: fade 4s var(--ease-out) 3s both;
   position: absolute;
-  top: 0; }
+  top: 0;
+}
 
+/* --------------------------------------------------------------------------
+   "In Progress" label
+   -------------------------------------------------------------------------- */
 .loader {
   height: 100vh;
   width: 100vw;
@@ -545,10 +395,22 @@ model-viewer#victory {
   display: flex;
   justify-content: center;
   align-items: center;
-  pointer-events: none; }
-  .loader span {
-    font: 1.5rem/1.5rem "din-condensed-web", "DIN-Bold", Helvetica Neue, Helvetica, Arial, sans-serif;
-    color: #171725;
-    letter-spacing: 1rem;
-    text-transform: uppercase;
-    text-align: center; }
+  pointer-events: none;
+}
+
+.loader span {
+  font: 1.5rem/1.5rem var(--font-condensed);
+  color: var(--color-coal);
+  letter-spacing: 1rem;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  model-viewer#victory {
+    animation: none;
+  }
+}
