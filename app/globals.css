@@ -1,10 +1,8 @@
 /* ==========================================================================
-   Lindmark Design: styles.css
-   Plain CSS, edited by hand (no build step).
+   Lindmark Design: globals.css
+   Plain CSS, edited by hand. (The MyFonts page-view counter for DIN, which
+   used to be this file's @import, is a <link> in app/layout.tsx.)
    ========================================================================== */
-
-/* MyFonts webfont license page-view counter for DIN. Must stay the first rule. */
-@import url("//hello.myfonts.net/count/2d7cd4");
 
 :root {
   /* Neutral: flat grays, black to white */
@@ -357,22 +355,24 @@ template {
   display: none; }
 
 
+
 /* --------------------------------------------------------------------------
    Base
    -------------------------------------------------------------------------- */
-/* A single, fixed screen: no scrolling, rubber-band bounce or pull-to-refresh */
-html,
 body {
+  font: 100% var(--font-regular);
+  margin: 0;
+  background-color: var(--color-midnight);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Home is a single, fixed screen: no scrolling, rubber-band bounce or
+   pull-to-refresh. The other pages scroll normally. */
+html:has(.stage[data-route="home"]),
+html:has(.stage[data-route="home"]) body {
   height: 100%;
   overflow: hidden;
   overscroll-behavior: none;
-}
-
-body {
-  font: 100% var(--font-regular);
-  position: relative;
-  margin: 0;
-  background-color: var(--color-midnight);
 }
 
 @keyframes fade {
@@ -380,41 +380,80 @@ body {
   to { opacity: 1; }
 }
 
-/* --------------------------------------------------------------------------
-   Winged Victory model
-   -------------------------------------------------------------------------- */
-model-viewer#victory {
-  pointer-events: none;
-  --poster-color: transparent;
-  /* Fill exactly the visible screen; 100vw/100vh overshoot it on phones (address
-     bar) and on desktops with visible scrollbars. */
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  animation: fade 6s var(--ease-out) 1s both paused; /* runs once the model loads */
-  filter: contrast(1.2); /* statue only: the grain layer above stays untouched */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(0.75rem); }
+  to { opacity: 1; transform: none; }
 }
 
 /* --------------------------------------------------------------------------
-   Logo, centred over the statue (white mark)
+   Stage: the backdrop every page sits on. Black on home, white elsewhere;
+   the colour change is the slow middle of every move to or from home.
    -------------------------------------------------------------------------- */
-.logo {
+.stage {
+  --margin: 2rem; /* 32px: the frame around every section page */
+  --ink: var(--color-marshmallow);
+  --paper: var(--color-midnight);
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  color: var(--ink);
+  background-color: var(--paper);
+  transition: background-color var(--flood) ease-in-out;
+}
+
+.stage[data-tone="light"] {
+  --ink: var(--color-midnight);
+  --paper: var(--color-marshmallow);
+}
+
+/* --------------------------------------------------------------------------
+   Winged Victory model
+   -------------------------------------------------------------------------- */
+/* The wrapper carries the transition fade (set from JS); the model itself
+   carries the opening reveal. They're kept apart because a CSS animation
+   would override the inline opacity. */
+.statue {
   position: fixed;
   inset: 0;
-  margin: 0;
+  pointer-events: none;
+}
+
+.statue[hidden] {
+  display: none; /* stops model-viewer rendering while it's off screen */
+}
+
+.statue model-viewer {
+  --poster-color: transparent;
+  display: block;
+  /* Fill exactly the visible screen; 100vw/100vh overshoot it on phones
+     (address bar) and on desktops with visible scrollbars. */
+  width: 100%;
+  height: 100%;
+  animation: fade 6s var(--ease-out) 1s both paused; /* runs once the model loads */
+  filter: contrast(1.2);
+}
+
+/* --------------------------------------------------------------------------
+   Home: the logo centred over the statue, and the links beneath it
+   -------------------------------------------------------------------------- */
+.home {
+  position: fixed;
+  inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   pointer-events: none;
-  animation: fade 6s var(--ease-out) 1s both paused; /* revealed with the statue */
+  transition: opacity calc(var(--flood) * 0.4) var(--ease-in);
 }
 
-/* The reveal (1s pause, then a 6s fade) starts once the model has loaded, so
-   a slow connection never fades in an empty frame. */
-.is-loaded model-viewer#victory,
-.is-loaded .logo {
-  animation-play-state: running;
+/* The links hang below the logo without nudging it off centre. */
+.mark {
+  position: relative;
+}
+
+.logo {
+  margin: 0;
+  animation: fade 6s var(--ease-out) 1s both paused; /* revealed with the statue */
 }
 
 .logo img {
@@ -423,42 +462,298 @@ model-viewer#victory {
   height: auto;
 }
 
-/* --------------------------------------------------------------------------
-   Film grain: monochrome noise over the whole view, re-dealt ~12x a second
-   -------------------------------------------------------------------------- */
-body::after {
-  content: "";
-  position: fixed;
-  inset: -256px; /* one tile of slack on every side, so shifting never shows an edge */
-  z-index: 10;
+/* The reveal (1s pause, then a 6s fade) starts once the model has loaded, so
+   a slow connection never fades in an empty frame. */
+.stage[data-loaded] .statue model-viewer,
+.stage[data-loaded] .logo {
+  animation-play-state: running;
+}
+
+/* Back from another page the statue is already here, so the mark comes in
+   with the dark rather than taking the long opening reveal. */
+.stage[data-entry="return"] .logo {
+  animation-duration: 2.4s;
+  animation-delay: calc(var(--flood) * 0.4);
+}
+
+.home-nav {
+  /* A row far wider than the logo, centred on it, so the labels sit centred
+     underneath whatever their widths. */
+  position: absolute;
+  top: 100%;
+  left: -50vw;
+  right: -50vw;
+  display: flex;
+  justify-content: center;
+  gap: 0 1.75rem;
+  margin-top: 2.25rem;
+  white-space: nowrap;
+  /* Hidden links can't be clicked or tapped: on a touch screen the first tap
+     in the centre only brings them up. */
+  opacity: 0;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 0 1'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='3.5' intercept='-1.25'/%3E%3CfeFuncG type='linear' slope='3.5' intercept='-1.25'/%3E%3CfeFuncB type='linear' slope='3.5' intercept='-1.25'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
-  background-size: 256px 256px;
-  opacity: 0.07;
-  will-change: transform;
-  animation: grain 0.66s steps(1) infinite;
+  transform: translateY(-0.375rem);
+  transition:
+    opacity 1.6s var(--ease-out),
+    transform 1.6s var(--ease-out);
 }
 
-/* The grain moves by transform (compositor only) rather than
-   background-position, which repainted the full-screen layer every step. */
-@keyframes grain {
-  0%   { transform: translate(0, 0); }
-  12%  { transform: translate(-97px, 43px); }
-  25%  { transform: translate(61px, -118px); }
-  37%  { transform: translate(-142px, -29px); }
-  50%  { transform: translate(23px, 131px); }
-  62%  { transform: translate(119px, 77px); }
-  75%  { transform: translate(-38px, -151px); }
-  87%  { transform: translate(156px, -64px); }
+.home-nav[data-open],
+.home-nav:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+.home-nav a {
+  font-family: var(--font-regular);
+  font-size: 0.75rem; /* 12px */
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-marshmallow);
+  text-decoration: none;
+  padding: 0.5rem 0; /* a taller target for fingers */
+  margin-right: -0.14em; /* no trailing letter-space, so labels centre true */
+  opacity: 0.72;
+  transition:
+    opacity 0.4s ease,
+    translate var(--center) cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.home-nav a:hover,
+.home-nav a:focus-visible {
+  opacity: 1;
+}
+
+.home-nav a:focus-visible,
+.site-logo:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 0.375rem;
+}
+
+/* Chosen: that label glides to the centre, under the logo, as the others
+   fade. Then the light comes up. */
+.home-nav[data-chosen] a {
+  opacity: 0;
+  transition-duration: calc(var(--center) * 0.6), var(--center);
+}
+
+.home-nav[data-chosen] a[data-chosen] {
+  opacity: 1;
+  translate: var(--shift, 0) 0;
+}
+
+/* Clicked: everything on home falls away as the light comes up. */
+.stage[data-leaving="home"] .home {
+  opacity: 0;
 }
 
 /* --------------------------------------------------------------------------
-   Reduced motion
+   Section pages (Product, Photo, Wood, About): black on white
+   -------------------------------------------------------------------------- */
+.section {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  min-height: 100dvh;
+  animation: fade 1s var(--ease-out) both;
+  transition: opacity var(--leave) var(--ease-in);
+}
+
+.site-header {
+  /* Sits in the 32px margin above the page: the mark in the top-left square,
+     the section's name centred. */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: var(--margin);
+  pointer-events: none;
+}
+
+.site-logo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--margin);
+  height: var(--margin);
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+}
+
+.site-logo img {
+  display: block;
+  width: 1.25rem; /* 20px */
+  height: auto;
+  filter: invert(1); /* the white mark, in black */
+}
+
+.site-label {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  margin: 0;
+  font-weight: normal;
+  font-size: 0.75rem; /* 12px */
+  line-height: var(--margin);
+  letter-spacing: 0.14em;
+  margin-right: -0.14em; /* no trailing letter-space, so it centres true */
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.page {
+  padding: clamp(5rem, 16vh, 10rem) var(--margin) 4rem;
+}
+
+.page-body {
+  max-width: 48rem;
+  animation: rise 1.1s var(--ease-out) 0.15s both;
+  transition: opacity var(--leave) var(--ease-in);
+}
+
+.page-title {
+  font-family: var(--font-bold);
+  font-weight: normal;
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.page-lede {
+  margin: 1.5rem 0 0;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  opacity: 0.6;
+}
+
+/* --------------------------------------------------------------------------
+   Galleries (Photo, Wood): one photo at a time, fitted to the screen below the
+   header with a 32px margin; the arrows sit in the side margins.
+   -------------------------------------------------------------------------- */
+html:has(.gallery),
+html:has(.gallery) body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.gallery {
+  position: fixed;
+  inset: 0;
+  animation: fade 1.1s var(--ease-out) 0.15s both;
+  transition: opacity var(--leave) var(--ease-in);
+}
+
+.gallery-frame {
+  position: absolute;
+  inset: var(--margin);
+  touch-action: pan-y pinch-zoom; /* horizontal swipes are ours */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.gallery-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  -webkit-touch-callout: none;
+}
+
+.gallery-photo[data-current] {
+  opacity: 1;
+}
+
+/* Centred on the photo's box, in the margin either side of it. */
+.gallery-arrow {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  width: var(--margin);
+  height: 4.5rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  opacity: 0.4;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gallery-arrow[data-dir="prev"] { left: 0; }
+.gallery-arrow[data-dir="next"] { right: 0; }
+
+.gallery-arrow:hover,
+.gallery-arrow:focus-visible {
+  opacity: 1;
+}
+
+.gallery-arrow:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: -0.25rem;
+}
+
+.gallery-arrow svg {
+  width: 1.125rem; /* 18px */
+  height: 1.125rem;
+  fill: currentColor;
+}
+
+.gallery-arrow[data-dir="prev"] svg {
+  scale: -1 1; /* the same arrow, pointing left */
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Between section pages only the page body changes; heading home the whole
+   section goes before the dark comes back. */
+.stage[data-leaving="page"] .page-body,
+.stage[data-leaving="page"] .gallery,
+.stage[data-leaving="section"] .section {
+  opacity: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion: no turning, drifting or rising; colour changes are quick
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
-  model-viewer#victory,
+  .stage,
+  .home {
+    transition-duration: 0.2s;
+  }
+
+  .statue model-viewer,
   .logo,
-  body::after {
+  .section,
+  .page-body,
+  .gallery {
     animation: none;
+  }
+
+  .home-nav {
+    transform: none;
+    transition-duration: 0.2s;
+  }
+
+  .gallery-photo {
+    transition-duration: 0.15s;
   }
 }
