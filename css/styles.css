@@ -360,6 +360,14 @@ template {
 /* --------------------------------------------------------------------------
    Base
    -------------------------------------------------------------------------- */
+/* A single, fixed screen: no scrolling, rubber-band bounce or pull-to-refresh */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 body {
   font: 100% var(--font-regular);
   position: relative;
@@ -378,12 +386,14 @@ body {
 model-viewer#victory {
   pointer-events: none;
   --poster-color: transparent;
-  width: 100vw;
-  height: 100vh;
+  /* Fill exactly the visible screen; 100vw/100vh overshoot it on phones (address
+     bar) and on desktops with visible scrollbars. */
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   animation: fade 6s var(--ease-out) 1s both paused; /* runs once the model loads */
   filter: contrast(1.2); /* statue only: the grain layer above stays untouched */
-  position: absolute;
-  top: 0;
 }
 
 /* --------------------------------------------------------------------------
