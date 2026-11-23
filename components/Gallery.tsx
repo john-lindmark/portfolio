@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from 'react';
 import type { Gallery as GallerySet, Photo } from './galleries';
+import { HeaderAction } from './HeaderAction';
 
 // One photo at a time, fitted inside the screen with a 32px margin. Move
 // through them with the arrow keys, a swipe, or the arrows that sit in the
@@ -11,7 +12,7 @@ import type { Gallery as GallerySet, Photo } from './galleries';
 // then everything fades in together (see .gallery[data-ready] in the CSS).
 // Each later photo also fades in only once it has loaded.
 //
-// The button in the top-right corner swaps, slowly, to a grid of every photo
+// The button in the header's right square swaps, slowly, to a grid of every photo
 // (2 columns on phones, 3 wider up) that scrolls vertically. Choosing one
 // opens it; Escape or the button again goes back.
 
@@ -232,20 +233,22 @@ export function Gallery({ set }: { set: GallerySet }) {
         </div>
       )}
 
-      <button
-        type="button"
-        className="gallery-toggle"
-        aria-label={grid ? 'Back to one photo' : 'Show all photos'}
-        aria-pressed={grid}
-        onClick={() => (grid ? setGrid(false) : openGrid())}
-      >
-        <span data-icon="grid">
-          <GridIcon />
-        </span>
-        <span data-icon="single">
-          <SingleIcon />
-        </span>
-      </button>
+      <HeaderAction>
+        <button
+          type="button"
+          className="site-icon gallery-toggle"
+          aria-label={grid ? 'Back to one photo' : 'Show all photos'}
+          aria-pressed={grid}
+          onClick={() => (grid ? setGrid(false) : openGrid())}
+        >
+          <span data-icon="grid">
+            <GridIcon />
+          </span>
+          <span data-icon="single">
+            <SingleIcon />
+          </span>
+        </button>
+      </HeaderAction>
 
       <p className="visually-hidden" aria-live="polite">
         {grid ? `${title}, all ${count} photos` : `${title}, photo ${index + 1} of ${count}`}

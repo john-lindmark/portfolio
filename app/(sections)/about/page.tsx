@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
+import { HeaderAction } from '@/components/HeaderAction';
 import { HoldUntilLoaded } from '@/components/HoldUntilLoaded';
 
 export const metadata: Metadata = { title: 'About' };
+
+const EMAIL = 'lindmarkjohn@gmail.com';
 
 // Long edge scaled to 1280px and 2560px (never up), as in the galleries.
 function photo(name: string, width: number, height: number) {
@@ -15,7 +18,6 @@ function photo(name: string, width: number, height: number) {
 const LINES = [
   'I’m John Lindmark.',
   'I spend my time at work building and leading talent-dense teams to achieve ambitious ends through ambiguity.',
-  'When hiring, if your resume or portfolio tells me what I want to hear then I’m more likely than not to reject it. My respect goes to those who build their portfolio for themselves.',
   'I’ve found my best work is done before I understand the rules and usually in a brief, energetic flourish of expression.',
   'I feel like we’re violently tearing ourselves away from our heritage as we race towards the frontier of AI.',
   'I’ve started to cherish quiet, prolonged time in nature.',
@@ -25,6 +27,14 @@ export default function AboutPage() {
   return (
     <HoldUntilLoaded className="about">
       <h1 className="visually-hidden">About</h1>
+
+      <HeaderAction>
+        <a className="site-icon" href={`mailto:${EMAIL}`} aria-label={`Email ${EMAIL}`}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2.5,19.5V4.5h19v15H2.5ZM12,12.56L4,7.44V18H20V7.44l-8,5.12ZM12,11l7.85-5H4.15L12,11ZM4,7.44V6V7.44V18V7.44Z" />
+          </svg>
+        </a>
+      </HeaderAction>
 
       {/* The first photo sits centred in the screen on arrival. */}
       <figure className="about-photo" data-first>
