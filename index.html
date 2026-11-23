@@ -56,7 +56,7 @@
     const BASE_PITCH = 85;   // camera angle down from straight overhead
     const TILT = 8;          // +/- swing of that angle as the statue turns
     const RADIUS = '330m';   // far back on a long (1.74deg) lens for a tight crop
-    const CAMERA = 0;        // fixed camera angle; the key light sits 160deg clockwise of it
+    const CAMERA = 0;        // fixed camera angle; the key light sits 130deg clockwise of it
 
     function viewAt(theta) {
       const pitch = BASE_PITCH + TILT * Math.cos((theta - FRONT) * Math.PI / 180);
