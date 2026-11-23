@@ -50,13 +50,13 @@
 
     // Angles below are where the camera sits relative to the statue, as when
     // the camera orbited; the statue now turns to produce the same views.
-    const DEGREES_PER_SECOND = 8;
+    const DEGREES_PER_SECOND = 5;
     const FRONT = -30;       // view angle that faces the statue head-on
     const START = -100;      // open on the statue's right wing, then turn to the front
     const BASE_PITCH = 85;   // camera angle down from straight overhead
     const TILT = 8;          // +/- swing of that angle as the statue turns
     const RADIUS = '330m';   // far back on a long (1.74deg) lens for a tight crop
-    const CAMERA = 0;        // fixed camera angle; the key light sits 130deg clockwise of it
+    const CAMERA = 0;        // fixed camera angle; the key light sits 110deg clockwise of it
 
     function viewAt(theta) {
       const pitch = BASE_PITCH + TILT * Math.cos((theta - FRONT) * Math.PI / 180);
