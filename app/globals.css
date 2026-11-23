@@ -530,6 +530,13 @@ html:has(.stage[data-route="home"]) body {
   outline-offset: 0.375rem;
 }
 
+/* Out of reach, hover or not, until the statue's light is halfway up. */
+.stage:not([data-nav-ready]) .home-nav {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-0.375rem);
+}
+
 /* Chosen: that label glides to the centre, under the logo, as the others
    fade. Then the light comes up. */
 .home-nav[data-chosen] a {

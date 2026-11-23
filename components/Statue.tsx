@@ -64,11 +64,14 @@ export function Statue({
   ref,
   flooded,
   onLoad,
+  onHalfway,
 }: {
   ref: Ref<StatueHandle>;
   /** Start fully flooded out (a page other than home was opened directly). */
   flooded: boolean;
   onLoad: () => void;
+  /** The opening light-up, or a settle back from white, is half done. */
+  onHalfway: () => void;
 }) {
   const wrap = useRef<HTMLDivElement>(null);
   const viewer = useRef<ModelViewerElement>(null);
@@ -128,6 +131,9 @@ export function Statue({
       show();
       await loaded.current!.promise;
       if (id !== tween.current) return false;
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const half = reduce ? 0 : (FLOOD_MS * level.current) / 2;
+      setTimeout(() => id + 1 === tween.current && onHalfway(), half);
       return animateTo(0);
     },
     hide() {
@@ -171,8 +177,11 @@ export function Statue({
       if (reduce || level.current > 0) {
         light.current = 1;
         apply();
+        // Flooded (not on home): settle() says when it's halfway back instead.
+        if (level.current === 0) onHalfway();
         return;
       }
+      let halfway = false;
       let t0: number | undefined;
       const rise = (now: number) => {
         if (cancelled) return;
@@ -180,6 +189,10 @@ export function Statue({
         const t = Math.min(Math.max((now - t0) / REVEAL_MS, 0), 1);
         light.current = level.current > 0 ? 1 : lightAt(t);
         apply();
+        if (!halfway && t >= 0.5) {
+          halfway = true;
+          onHalfway();
+        }
         if (light.current < 1) requestAnimationFrame(rise);
       };
       requestAnimationFrame(rise);
@@ -197,6 +210,7 @@ export function Statue({
     const onError = () => {
       loaded.current!.resolve();
       onLoad();
+      onHalfway();
     };
 
     import('@google/model-viewer').then(async () => {
