@@ -38,7 +38,7 @@ export default function AboutPage() {
 
       {/* The first photo sits centred in the screen on arrival. */}
       <figure className="about-photo" data-first>
-        <img {...photo('IMG_1544', 3130, 2075)} sizes="(max-width: 767px) 66vw, 50vw" alt="" fetchPriority="high" />
+        <img {...photo('IMG_1544', 3130, 2075)} sizes="(max-width: 767px) calc(100vw - 64px), 50vw" alt="" fetchPriority="high" />
       </figure>
 
       <div className="about-text">
@@ -48,7 +48,7 @@ export default function AboutPage() {
       </div>
 
       <figure className="about-photo">
-        <img {...photo('IMG_0593', 2296, 1536)} sizes="(max-width: 767px) 66vw, 50vw" alt="" loading="lazy" />
+        <img {...photo('IMG_0593', 2296, 1536)} sizes="(max-width: 767px) calc(100vw - 64px), 50vw" alt="" loading="lazy" />
       </figure>
     </HoldUntilLoaded>
   );

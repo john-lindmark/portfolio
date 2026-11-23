@@ -520,9 +520,16 @@ html:has(.stage[data-route="home"]) body {
     translate var(--center) cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-.home-nav a:hover,
 .home-nav a:focus-visible {
   opacity: 1;
+}
+
+/* Only where there's a real hover: a phone keeps "hover" on whatever was
+   last tapped, which left icons stuck dark. */
+@media (hover: hover) {
+  .home-nav a:hover {
+    opacity: 1;
+  }
 }
 
 .home-nav a:focus-visible {
@@ -597,9 +604,16 @@ html:has(.stage[data-route="home"]) body {
   -webkit-tap-highlight-color: transparent;
 }
 
-.site-icon:hover,
 .site-icon:focus-visible {
   opacity: 1;
+}
+
+/* Only where there's a real hover: a phone keeps "hover" on whatever was
+   last tapped, which left icons stuck dark. */
+@media (hover: hover) {
+  .site-icon:hover {
+    opacity: 1;
+  }
 }
 
 .site-icon:focus-visible {
@@ -863,9 +877,16 @@ html:has(.gallery) body {
 .gallery-arrow[data-dir="prev"] { left: 0; }
 .gallery-arrow[data-dir="next"] { right: 0; }
 
-.gallery-arrow:hover,
 .gallery-arrow:focus-visible {
   opacity: 1;
+}
+
+/* Only where there's a real hover: a phone keeps "hover" on whatever was
+   last tapped, which left icons stuck dark. */
+@media (hover: hover) {
+  .gallery-arrow:hover {
+    opacity: 1;
+  }
 }
 
 .gallery-arrow:focus-visible {
@@ -895,8 +916,8 @@ html:has(.gallery) body {
 
 /* --------------------------------------------------------------------------
    About: a photo centred on the opening screen, lines of text spaced well
-   apart, and a closing photo. Photos are half the screen wide, a little more
-   on phones.
+   apart, and a closing photo. Photos are half the screen wide; on phones they
+   fill the content width.
    -------------------------------------------------------------------------- */
 .section:has(.about) .page {
   padding: 0 var(--margin);
@@ -947,8 +968,9 @@ html:has(.gallery) body {
 
 
 @media (max-width: 767px) {
+  /* Phones: the full content width, inside the 32px side margins. */
   .about-photo img {
-    width: 66vw;
+    width: 100%;
   }
 
   .about-text {
