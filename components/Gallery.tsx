@@ -10,11 +10,24 @@ import type { Gallery as GallerySet, Photo } from './galleries';
 // Nothing shows until the first photo has loaded: the page holds on white,
 // then everything fades in together (see .gallery[data-ready] in the CSS).
 // Each later photo also fades in only once it has loaded.
+//
+// The button in the top-right corner swaps, slowly, to a grid of every photo
+// (2 columns on phones, 3 wider up) that scrolls vertically. Choosing one
+// opens it; Escape or the button again goes back.
 
 /** Horizontal travel (px) that counts as a swipe. */
 const SWIPE = 40;
 
 const SIZES = [1280, 2560];
+
+/** "View all" grid icon. */
+function GridIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M2.5,10V2.5H10V10H2.5ZM4,8.5H8.5V4H4V8.5Zm-1.5,13V14H10v7.5H2.5ZM4,20H8.5V15.5H4V20ZM14,10V2.5h7.5V10H14Zm1.5-1.5H20V4H15.5V8.5ZM14,21.5V14h7.5v7.5H14ZM15.5,20H20V15.5H15.5V20ZM8.5,8.5Zm0,7Zm7-7Zm0,7Z" />
+    </svg>
+  );
+}
 
 /** Right-pointing arrow (Previous mirrors it in CSS). */
 function Arrow() {
@@ -45,17 +58,48 @@ export function Gallery({ set }: { set: GallerySet }) {
   const ready = loaded.has(photos[0].name);
   const go = useCallback((step: number) => setIndex((i) => (i + step + count) % count), [count]);
 
+  // The grid is only built the first time it's asked for, then kept, so it can
+  // fade in and out rather than appear.
+  const [grid, setGrid] = useState(false);
+  const [gridBuilt, setGridBuilt] = useState(false);
+  const [tilesLoaded, setTilesLoaded] = useState<ReadonlySet<string>>(() => new Set());
+  const markTile = useCallback(
+    (name: string) => setTilesLoaded((done) => (done.has(name) ? done : new Set(done).add(name))),
+    [],
+  );
+  const gridEl = useRef<HTMLDivElement>(null);
+  const openGrid = () => {
+    setGridBuilt(true);
+    // Let the grid land in the page, hidden, before showing it, so it fades.
+    requestAnimationFrame(() => requestAnimationFrame(() => setGrid(true)));
+  };
+  const openPhoto = (i: number) => {
+    setIndex(i);
+    setGrid(false);
+  };
+
+  // Opening the grid, bring the photo you were on into view.
+  useEffect(() => {
+    if (!grid) return;
+    const tile = gridEl.current?.querySelector<HTMLElement>(`[data-index="${index}"]`);
+    tile?.scrollIntoView({ block: 'center' });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [grid]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
-      if (e.key === 'ArrowLeft') go(-1);
+      if (grid) {
+        if (e.key !== 'Escape') return;
+        setGrid(false);
+      } else if (e.key === 'ArrowLeft') go(-1);
       else if (e.key === 'ArrowRight') go(1);
       else return;
       e.preventDefault();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [go]);
+  }, [go, grid]);
 
   // Swipes: horizontal moves only, so a vertical drag never flips the photo.
   const start = useRef<{ x: number; y: number; id: number } | null>(null);
@@ -89,49 +133,95 @@ export function Gallery({ set }: { set: GallerySet }) {
   };
 
   return (
-    <div className="gallery" data-ready={ready || undefined} aria-roledescription="carousel" aria-label={title}>
-      <div
-        ref={frame}
-        className="gallery-frame"
-        onPointerDown={onPointerDown}
-        onPointerUp={onPointerUp}
-        onPointerCancel={() => (start.current = null)}
-      >
-        {photos.map((photo, i) =>
-          near(i) ? (
-            <img
-              key={photo.name}
-              className="gallery-photo"
-              data-name={photo.name}
-              data-current={i === index || undefined}
-              data-loaded={loaded.has(photo.name) || undefined}
-              onLoad={() => markLoaded(photo.name)}
-              onError={() => markLoaded(photo.name)}
-              src={`/images/${folder}/${photo.name}-1280.jpg`}
-              srcSet={sources(folder, photo)}
-              sizes="calc(100vw - 64px)"
-              width={photo.width}
-              height={photo.height}
-              alt={`${title}, ${i + 1} of ${count}`}
-              aria-hidden={i !== index || undefined}
-              draggable={false}
-              decoding="async"
-            />
-          ) : null,
+    <div
+      className="gallery"
+      data-ready={ready || undefined}
+      data-view={grid ? 'grid' : 'single'}
+      aria-roledescription="carousel"
+      aria-label={title}
+    >
+      <div className="gallery-single" inert={grid}>
+        <div
+          ref={frame}
+          className="gallery-frame"
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
+          onPointerCancel={() => (start.current = null)}
+        >
+          {photos.map((photo, i) =>
+            near(i) ? (
+              <img
+                key={photo.name}
+                className="gallery-photo"
+                data-name={photo.name}
+                data-current={i === index || undefined}
+                data-loaded={loaded.has(photo.name) || undefined}
+                onLoad={() => markLoaded(photo.name)}
+                onError={() => markLoaded(photo.name)}
+                src={`/images/${folder}/${photo.name}-1280.jpg`}
+                srcSet={sources(folder, photo)}
+                sizes="calc(100vw - 64px)"
+                width={photo.width}
+                height={photo.height}
+                alt={`${title}, ${i + 1} of ${count}`}
+                aria-hidden={i !== index || undefined}
+                draggable={false}
+                decoding="async"
+              />
+            ) : null,
+          )}
+        </div>
+        {count > 1 && (
+          <>
+            <button type="button" className="gallery-arrow" data-dir="prev" aria-label="Previous photo" onClick={() => go(-1)}>
+              <Arrow />
+            </button>
+            <button type="button" className="gallery-arrow" data-dir="next" aria-label="Next photo" onClick={() => go(1)}>
+              <Arrow />
+            </button>
+          </>
         )}
       </div>
-      {count > 1 && (
-        <>
-          <button type="button" className="gallery-arrow" data-dir="prev" aria-label="Previous photo" onClick={() => go(-1)}>
-            <Arrow />
-          </button>
-          <button type="button" className="gallery-arrow" data-dir="next" aria-label="Next photo" onClick={() => go(1)}>
-            <Arrow />
-          </button>
-        </>
+
+      {gridBuilt && (
+        <div ref={gridEl} className="gallery-grid" inert={!grid}>
+          <ul>
+            {photos.map((photo, i) => (
+              <li key={photo.name}>
+                <button type="button" data-index={i} aria-label={`Open ${title}, ${i + 1} of ${count}`} onClick={() => openPhoto(i)}>
+                  <img
+                    src={`/images/${folder}/${photo.name}-1280.jpg`}
+                    srcSet={sources(folder, photo)}
+                    sizes="(min-width: 768px) calc((100vw - 128px) / 3), calc((100vw - 96px) / 2)"
+                    width={photo.width}
+                    height={photo.height}
+                    alt=""
+                    data-loaded={tilesLoaded.has(photo.name) || undefined}
+                    onLoad={() => markTile(photo.name)}
+                    onError={() => markTile(photo.name)}
+                    loading="lazy"
+                    decoding="async"
+                    draggable={false}
+                  />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
+
+      <button
+        type="button"
+        className="gallery-toggle"
+        aria-label={grid ? 'Back to one photo' : 'Show all photos'}
+        aria-pressed={grid}
+        onClick={() => (grid ? setGrid(false) : openGrid())}
+      >
+        <GridIcon />
+      </button>
+
       <p className="visually-hidden" aria-live="polite">
-        {title}, photo {index + 1} of {count}
+        {grid ? `${title}, all ${count} photos` : `${title}, photo ${index + 1} of ${count}`}
       </p>
     </div>
   );

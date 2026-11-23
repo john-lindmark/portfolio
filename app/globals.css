@@ -696,6 +696,121 @@ html:has(.gallery) body {
   opacity: 1;
 }
 
+/* Single photo and grid cross-fade, slowly. The hidden one also goes
+   invisible once faded, so it can't be clicked or tabbed into. */
+.gallery {
+  --view: 1.2s;
+}
+
+.gallery-single,
+.gallery-grid {
+  position: absolute;
+  inset: 0;
+  transition:
+    opacity var(--view) ease-in-out,
+    visibility 0s linear 0s;
+}
+
+.gallery[data-view="grid"] .gallery-single,
+.gallery[data-view="single"] .gallery-grid {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--view) ease-in-out,
+    visibility 0s linear var(--view);
+}
+
+/* The grid scrolls below the top margin, so the label and buttons up there
+   never sit over a photo. */
+.gallery-grid {
+  top: var(--margin);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.gallery-grid ul {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--margin) var(--margin);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--margin);
+}
+
+@media (min-width: 768px) {
+  .gallery-grid ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Each photo fitted inside a square. */
+.gallery-grid button {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gallery-grid button:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 0.375rem;
+}
+
+.gallery-grid img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity var(--view) ease;
+}
+
+.gallery-grid img[data-loaded] {
+  opacity: 1;
+}
+
+/* Top-right corner: switch between one photo and the grid. Same colours and
+   interaction as the arrows; stays dark while the grid is showing. */
+.gallery-toggle {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 3;
+  width: var(--margin);
+  height: var(--margin);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  opacity: 0.4;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gallery-toggle:hover,
+.gallery-toggle:focus-visible,
+.gallery-toggle[aria-pressed="true"] {
+  opacity: 1;
+}
+
+.gallery-toggle:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: -0.25rem;
+}
+
+.gallery-toggle svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: currentColor;
+}
+
 /* Centred on the photo's box, in the margin either side of it. */
 .gallery-arrow {
   position: absolute;
@@ -780,5 +895,9 @@ html:has(.gallery) body {
 
   .gallery-photo {
     transition-duration: 0.15s;
+  }
+
+  .gallery {
+    --view: 0.2s;
   }
 }
