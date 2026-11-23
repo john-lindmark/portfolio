@@ -24,7 +24,7 @@
 
 <body>
 
-  <model-viewer src="models/winged-victory.glb" id="victory" alt="A 3D model of the Winged Victory of Samothrace, seen from a slowly orbiting camera" camera-orbit="-100deg 87.7deg 330m" min-camera-orbit="auto auto 0m" max-camera-orbit="auto auto 500m" field-of-view="1.74deg" min-field-of-view="1deg" max-field-of-view="auto" camera-target="-5.3m 35m 6.04m" interpolation-decay="0" shadow-intensity="1.8" exposure="1" tone-mapping="aces" environment-image="models/key-light.hdr">
+  <model-viewer src="models/winged-victory.glb" id="victory" alt="A 3D model of the Winged Victory of Samothrace, slowly turning" camera-orbit="0deg 87.7deg 330m" min-camera-orbit="auto auto 0m" max-camera-orbit="auto auto 500m" field-of-view="1.74deg" min-field-of-view="1deg" max-field-of-view="auto" camera-target="-5.3m 35m 6.04m" interpolation-decay="0" shadow-intensity="1.8" exposure="1" tone-mapping="aces" environment-image="models/key-light.hdr">
   </model-viewer>
 
   <h1 class="logo">
@@ -38,8 +38,9 @@
       customElements.get('model-viewer').minimumRenderScale = 1;
     });
 
-    // The statue stays put; the camera circles it on a slightly tilted orbit
-    // that dips lowest in front of the figure and rises behind it.
+    // The camera and the key light stay put; the statue turns on its own pivot
+    // (the camera target). The camera's pitch still follows the statue's angle,
+    // so the view dips lowest in front of the figure and rises behind it.
     const victory = document.getElementById('victory');
 
     // Start the reveal once the model is ready (or failed, so the logo still shows).
@@ -47,26 +48,33 @@
     victory.addEventListener('load', reveal, { once: true });
     victory.addEventListener('error', reveal, { once: true });
 
+    // Angles below are where the camera sits relative to the statue, as when
+    // the camera orbited; the statue now turns to produce the same views.
     const DEGREES_PER_SECOND = 8;
-    const FRONT = -30;       // orbit angle that faces the statue head-on
-    const START = -100;      // open on the statue's right wing, then swing to the front
+    const FRONT = -30;       // view angle that faces the statue head-on
+    const START = -100;      // open on the statue's right wing, then turn to the front
     const BASE_PITCH = 85;   // camera angle down from straight overhead
-    const TILT = 8;          // +/- swing of that angle around the orbit
+    const TILT = 8;          // +/- swing of that angle as the statue turns
     const RADIUS = '330m';   // far back on a long (1.74deg) lens for a tight crop
+    const CAMERA = 0;        // fixed camera angle; the key light sits 160deg clockwise of it
 
-    function orbitAt(theta) {
+    function viewAt(theta) {
       const pitch = BASE_PITCH + TILT * Math.cos((theta - FRONT) * Math.PI / 180);
-      return `${theta}deg ${pitch}deg ${RADIUS}`;
+      victory.cameraOrbit = `${CAMERA}deg ${pitch}deg ${RADIUS}`;
+      victory.resetTurntableRotation((CAMERA - theta) * Math.PI / 180);
     }
 
-    // Respect the visitor's reduced-motion setting: hold the camera still.
-    // Otherwise wait for the statue's fade-in to begin, so the opening view
-    // really is the START angle rather than wherever the orbit had reached.
+    // Set the opening view as soon as the model is in, before it fades up.
+    victory.addEventListener('load', () => viewAt(START), { once: true });
+
+    // Respect the visitor's reduced-motion setting: hold the statue still.
+    // Otherwise wait for the fade-in to begin, so the opening view really is
+    // the START angle rather than wherever the turn had reached.
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       let start;
       const step = (now) => {
         start ??= now;
-        victory.cameraOrbit = orbitAt(START + (now - start) / 1000 * DEGREES_PER_SECOND % 360);
+        viewAt(START + (now - start) / 1000 * DEGREES_PER_SECOND % 360);
         requestAnimationFrame(step);
       };
       victory.addEventListener('animationstart', () => requestAnimationFrame(step), { once: true });
