@@ -32,6 +32,9 @@ export function Experience({ children }: { children: ReactNode }) {
   const [entry, setEntry] = useState<'first' | 'return'>('first');
   const [loaded, setLoaded] = useState(false);
   const onLoad = useCallback(() => setLoaded(true), []);
+  // The home links stay out of reach until the statue's light is halfway up.
+  const [navReady, setNavReady] = useState(false);
+  const onHalfway = useCallback(() => setNavReady(true), []);
 
   // Settle into whatever page we've landed on. This also covers the browser's
   // back and forward buttons, which skip navigate() below.
@@ -44,6 +47,7 @@ export function Experience({ children }: { children: ReactNode }) {
     setEntry('return');
     if (isHome) {
       setTone('dark');
+      setNavReady(false);
       statue.current?.settle();
     } else {
       setTone('light');
@@ -80,9 +84,10 @@ export function Experience({ children }: { children: ReactNode }) {
         data-leaving={leaving ?? undefined}
         data-entry={entry}
         data-loaded={loaded || undefined}
+        data-nav-ready={navReady || undefined}
         style={{ '--center': `${CENTER_MS}ms`, '--flood': `${FLOOD_MS}ms`, '--leave': `${LEAVE_MS}ms` } as CSSProperties}
       >
-        <StaticStatue ref={statue} flooded={!openedOnHome} onLoad={onLoad} />
+        <StaticStatue ref={statue} flooded={!openedOnHome} onLoad={onLoad} onHalfway={onHalfway} />
         {children}
       </div>
     </Navigate.Provider>
