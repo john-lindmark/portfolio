@@ -380,7 +380,7 @@ model-viewer#victory {
   --poster-color: transparent;
   width: 100vw;
   height: 100vh;
-  animation: fade 4s var(--ease-out) 3s both;
+  animation: fade 6s var(--ease-out) 1s both paused; /* runs once the model loads */
   filter: contrast(1.2); /* statue only: the grain layer above stays untouched */
   position: absolute;
   top: 0;
@@ -397,7 +397,14 @@ model-viewer#victory {
   justify-content: center;
   align-items: center;
   pointer-events: none;
-  animation: fade 4s var(--ease-out) 3s both; /* revealed with the statue */
+  animation: fade 6s var(--ease-out) 1s both paused; /* revealed with the statue */
+}
+
+/* The reveal (1s pause, then a 6s fade) starts once the model has loaded, so
+   a slow connection never fades in an empty frame. */
+.is-loaded model-viewer#victory,
+.is-loaded .logo {
+  animation-play-state: running;
 }
 
 .logo img {

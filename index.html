@@ -41,6 +41,12 @@
     // The statue stays put; the camera circles it on a slightly tilted orbit
     // that dips lowest in front of the figure and rises behind it.
     const victory = document.getElementById('victory');
+
+    // Start the reveal once the model is ready (or failed, so the logo still shows).
+    const reveal = () => document.body.classList.add('is-loaded');
+    victory.addEventListener('load', reveal, { once: true });
+    victory.addEventListener('error', reveal, { once: true });
+
     const DEGREES_PER_SECOND = 8;
     const FRONT = -30;       // orbit angle that faces the statue head-on
     const START = -100;      // open on the statue's right wing, then swing to the front
