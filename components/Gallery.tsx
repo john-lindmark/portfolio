@@ -24,7 +24,7 @@ const SIZES = [1280, 2560];
 function GridIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M2.5,10V2.5H10V10H2.5ZM4,8.5H8.5V4H4V8.5Zm-1.5,13V14H10v7.5H2.5ZM4,20H8.5V15.5H4V20ZM14,10V2.5h7.5V10H14Zm1.5-1.5H20V4H15.5V8.5ZM14,21.5V14h7.5v7.5H14ZM15.5,20H20V15.5H15.5V20ZM8.5,8.5Zm0,7Zm7-7Zm0,7Z" />
+      <path d="M3.5,11V3.5H11V11H3.5Zm0,9.5V13H11v7.5H3.5ZM13,11V3.5h7.5V11H13Zm0,9.5V13h7.5v7.5H13ZM5,9.5H9.5V5H5V9.5Zm9.5,0H19V5H14.5V9.5Zm0,9.5H19V14.5H14.5V19ZM5,19H9.5V14.5H5V19Zm9.5-9.5Zm0,5Zm-5,0Zm0-5Z" />
     </svg>
   );
 }
@@ -47,7 +47,7 @@ function sources(folder: string, { name, width, height }: Photo) {
 }
 
 export function Gallery({ set }: { set: GallerySet }) {
-  const { folder, title, photos } = set;
+  const { folder, title, caption, photos } = set;
   const count = photos.length;
   const [index, setIndex] = useState(0);
   const [loaded, setLoaded] = useState<ReadonlySet<string>>(() => new Set());
@@ -171,6 +171,19 @@ export function Gallery({ set }: { set: GallerySet }) {
             ) : null,
           )}
         </div>
+        {caption && (
+          <p className="gallery-caption">
+            {/* Each part stays whole; on a narrow screen it only breaks at a bullet. */}
+            <span>
+              {caption.split(' • ').map((part, i) => (
+                <span key={i}>
+                  {i > 0 && ' • '}
+                  <span className="nowrap">{part}</span>
+                </span>
+              ))}
+            </span>
+          </p>
+        )}
         {count > 1 && (
           <>
             <button type="button" className="gallery-arrow" data-dir="prev" aria-label="Previous photo" onClick={() => go(-1)}>

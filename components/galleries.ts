@@ -4,11 +4,18 @@
 // width/height are the original's, for the aspect ratio.
 
 export type Photo = { name: string; width: number; height: number };
-export type Gallery = { folder: string; title: string; photos: Photo[] };
+export type Gallery = {
+  folder: string;
+  title: string;
+  /** Shown centred in the bottom margin under the single photo. */
+  caption?: string;
+  photos: Photo[];
+};
 
 export const PARIS: Gallery = {
   folder: 'photo',
   title: 'Paris',
+  caption: 'Paris • Canon A1 • Canon 35mm f2.8 TS S.S.C. • Raw scans',
   photos: [
     { name: 'IMG_0846', width: 3130, height: 2075 },
     { name: 'IMG_0571', width: 1532, height: 1015 },
