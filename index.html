@@ -24,7 +24,7 @@
 
 <body>
 
-  <model-viewer src="models/winged-victory.glb" id="victory" alt="A 3D model of the Winged Victory of Samothrace, seen from a slowly orbiting camera" camera-orbit="-30deg 93deg 230m" min-camera-orbit="auto auto 0m" max-camera-orbit="auto auto 400m" field-of-view="2.5deg" min-field-of-view="1deg" max-field-of-view="auto" camera-target="-6.3m 35m 7.77m" interpolation-decay="0" shadow-intensity="1.8" exposure="1" tone-mapping="aces" environment-image="models/key-light.hdr">
+  <model-viewer src="models/winged-victory.glb" id="victory" alt="A 3D model of the Winged Victory of Samothrace, seen from a slowly orbiting camera" camera-orbit="-100deg 87.7deg 230m" min-camera-orbit="auto auto 0m" max-camera-orbit="auto auto 400m" field-of-view="2.5deg" min-field-of-view="1deg" max-field-of-view="auto" camera-target="-6.3m 35m 7.77m" interpolation-decay="0" shadow-intensity="1.8" exposure="1" tone-mapping="aces" environment-image="models/key-light.hdr">
   </model-viewer>
 
   <h1 class="logo">
@@ -43,6 +43,7 @@
     const victory = document.getElementById('victory');
     const DEGREES_PER_SECOND = 8;
     const FRONT = -30;       // orbit angle that faces the statue head-on
+    const START = -100;      // open on the statue's right wing, then swing to the front
     const BASE_PITCH = 85;   // camera angle down from straight overhead
     const TILT = 8;          // +/- swing of that angle around the orbit
     const RADIUS = '230m';   // far back on a long (2.5deg) lens for a tight crop
@@ -53,14 +54,16 @@
     }
 
     // Respect the visitor's reduced-motion setting: hold the camera still.
+    // Otherwise wait for the statue's fade-in to begin, so the opening view
+    // really is the START angle rather than wherever the orbit had reached.
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       let start;
       const step = (now) => {
         start ??= now;
-        victory.cameraOrbit = orbitAt(FRONT + (now - start) / 1000 * DEGREES_PER_SECOND % 360);
+        victory.cameraOrbit = orbitAt(START + (now - start) / 1000 * DEGREES_PER_SECOND % 360);
         requestAnimationFrame(step);
       };
-      requestAnimationFrame(step);
+      victory.addEventListener('animationstart', () => requestAnimationFrame(step), { once: true });
     }
   </script>
 
