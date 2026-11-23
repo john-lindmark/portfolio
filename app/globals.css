@@ -525,8 +525,7 @@ html:has(.stage[data-route="home"]) body {
   opacity: 1;
 }
 
-.home-nav a:focus-visible,
-.site-logo:focus-visible {
+.home-nav a:focus-visible {
   outline: 1px solid currentColor;
   outline-offset: 0.375rem;
 }
@@ -572,7 +571,8 @@ html:has(.stage[data-route="home"]) body {
   pointer-events: none;
 }
 
-.site-logo {
+/* Close: back home. Same colours and interaction as the gallery arrows. */
+.site-close {
   position: absolute;
   top: 0;
   left: 0;
@@ -580,14 +580,27 @@ html:has(.stage[data-route="home"]) body {
   height: var(--margin);
   display: grid;
   place-items: center;
+  color: var(--ink);
+  opacity: 0.4;
   pointer-events: auto;
+  transition: opacity 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.site-logo img {
-  display: block;
-  width: 1.25rem; /* 20px */
-  height: auto;
-  filter: invert(1); /* the white mark, in black */
+.site-close:hover,
+.site-close:focus-visible {
+  opacity: 1;
+}
+
+.site-close:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: -0.25rem;
+}
+
+.site-close svg {
+  width: 1.25rem; /* 20px: the cross matches the arrows' size */
+  height: 1.25rem;
+  fill: currentColor;
 }
 
 .site-label {
