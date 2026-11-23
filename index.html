@@ -24,7 +24,7 @@
 
 <body>
 
-  <model-viewer src="models/winged-victory.glb" id="victory" alt="A 3D model of the Winged Victory of Samothrace, slowly turning" camera-orbit="0deg 87.7deg 330m" min-camera-orbit="auto auto 0m" max-camera-orbit="auto auto 500m" field-of-view="1.74deg" min-field-of-view="1deg" max-field-of-view="auto" camera-target="-4.3m 35m 4.31m" interpolation-decay="0" shadow-intensity="1.8" exposure="1" tone-mapping="aces" environment-image="models/key-light.hdr">
+  <model-viewer src="models/winged-victory.glb" id="victory" alt="A 3D model of the Winged Victory of Samothrace, slowly turning" camera-orbit="0deg 87.7deg 330m" min-camera-orbit="auto auto 0m" max-camera-orbit="auto auto 500m" field-of-view="1.74deg" min-field-of-view="1deg" max-field-of-view="auto" camera-target="-4.3m 35m 4.31m" interpolation-decay="0" exposure="1" tone-mapping="aces" environment-image="models/key-light.hdr">
   </model-viewer>
 
   <h1 class="logo">
@@ -70,11 +70,17 @@
     // Respect the visitor's reduced-motion setting: hold the statue still.
     // Otherwise wait for the fade-in to begin, so the opening view really is
     // the START angle rather than wherever the turn had reached.
+    // Updates are capped at ~30 a second: at this speed 30fps looks the same
+    // as 60 (or 120), and every update makes the GPU redraw 2M triangles.
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      let start;
+      const FRAME_MS = 1000 / 30;
+      let start, last = -Infinity;
       const step = (now) => {
         start ??= now;
-        viewAt(START + (now - start) / 1000 * DEGREES_PER_SECOND % 360);
+        if (now - last >= FRAME_MS - 2) {
+          last = now;
+          viewAt(START + (now - start) / 1000 * DEGREES_PER_SECOND % 360);
+        }
         requestAnimationFrame(step);
       };
       victory.addEventListener('animationstart', () => requestAnimationFrame(step), { once: true });
