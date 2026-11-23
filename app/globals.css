@@ -598,8 +598,8 @@ html:has(.stage[data-route="home"]) body {
 }
 
 .site-close svg {
-  width: 1.25rem; /* 20px, like every icon */
-  height: 1.25rem;
+  width: 1.125rem; /* 18px, like every icon */
+  height: 1.125rem;
   fill: currentColor;
 }
 
@@ -806,8 +806,8 @@ html:has(.gallery) body {
 }
 
 .gallery-toggle svg {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.125rem; /* 18px, like every icon */
+  height: 1.125rem;
   fill: currentColor;
 }
 
@@ -844,8 +844,8 @@ html:has(.gallery) body {
 }
 
 .gallery-arrow svg {
-  width: 1.25rem; /* 20px, like every icon */
-  height: 1.25rem;
+  width: 1.125rem; /* 18px, like every icon */
+  height: 1.125rem;
   fill: currentColor;
 }
 
