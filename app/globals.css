@@ -555,7 +555,7 @@ html:has(.stage[data-route="home"]) body {
 }
 
 /* --------------------------------------------------------------------------
-   Section pages (Product, Photo, Wood, About): black on white
+   Section pages (Design, Photo, Wood, About): black on white
    -------------------------------------------------------------------------- */
 .section {
   position: relative;
