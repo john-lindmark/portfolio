@@ -1,2 +1,7 @@
 .DS_Store
 *.sublime-workspace
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
