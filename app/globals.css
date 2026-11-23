@@ -611,6 +611,38 @@ html:has(.stage[data-route="home"]) body {
   fill: currentColor;
 }
 
+/* Email (About only): the top-right square, mirroring the close button. */
+.site-email {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: var(--margin);
+  height: var(--margin);
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  opacity: 0.4;
+  pointer-events: auto;
+  transition: opacity 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.site-email:hover,
+.site-email:focus-visible {
+  opacity: 1;
+}
+
+.site-email:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: -0.25rem;
+}
+
+.site-email svg {
+  width: 1.125rem; /* 18px, like every icon */
+  height: 1.125rem;
+  fill: currentColor;
+}
+
 .site-label {
   position: absolute;
   top: 0;
@@ -964,37 +996,6 @@ html:has(.gallery) body {
   text-wrap: pretty;
 }
 
-/* Email: top-right corner. Same colours and interaction as the other icons. */
-.about-email {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 3;
-  width: var(--margin);
-  height: var(--margin);
-  display: grid;
-  place-items: center;
-  color: var(--ink);
-  opacity: 0.4;
-  transition: opacity 0.3s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.about-email:hover,
-.about-email:focus-visible {
-  opacity: 1;
-}
-
-.about-email:focus-visible {
-  outline: 1px solid currentColor;
-  outline-offset: -0.25rem;
-}
-
-.about-email svg {
-  width: 1.125rem; /* 18px, like every icon */
-  height: 1.125rem;
-  fill: currentColor;
-}
 
 @media (max-width: 767px) {
   .about-photo img {

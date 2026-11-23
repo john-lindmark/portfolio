@@ -3,8 +3,6 @@ import { HoldUntilLoaded } from '@/components/HoldUntilLoaded';
 
 export const metadata: Metadata = { title: 'About' };
 
-const EMAIL = 'lindmarkjohn@gmail.com';
-
 // Long edge scaled to 1280px and 2560px (never up), as in the galleries.
 function photo(name: string, width: number, height: number) {
   const long = Math.max(width, height);
@@ -25,33 +23,23 @@ const LINES = [
 
 export default function AboutPage() {
   return (
-    <>
-      {/* Top-right corner, like the gallery toggle. Outside the faded content
-          so it draws above the white header strip. */}
-      <a className="about-email" href={`mailto:${EMAIL}`} aria-label={`Email ${EMAIL}`}>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M2.5,19.5V4.5h19v15H2.5ZM12,12.56L4,7.44V18H20V7.44l-8,5.12ZM12,11l7.85-5H4.15L12,11ZM4,7.44V6V7.44V18V7.44Z" />
-        </svg>
-      </a>
+    <HoldUntilLoaded className="about">
+      <h1 className="visually-hidden">About</h1>
 
-      <HoldUntilLoaded className="about">
-        <h1 className="visually-hidden">About</h1>
+      {/* The first photo sits centred in the screen on arrival. */}
+      <figure className="about-photo" data-first>
+        <img {...photo('IMG_1544', 3130, 2075)} sizes="(max-width: 767px) 66vw, 50vw" alt="" fetchPriority="high" />
+      </figure>
 
-        {/* The first photo sits centred in the screen on arrival. */}
-        <figure className="about-photo" data-first>
-          <img {...photo('IMG_1544', 3130, 2075)} sizes="(max-width: 767px) 66vw, 50vw" alt="" fetchPriority="high" />
-        </figure>
+      <div className="about-text">
+        {LINES.map((line) => (
+          <p key={line}>{line}</p>
+        ))}
+      </div>
 
-        <div className="about-text">
-          {LINES.map((line) => (
-            <p key={line}>{line}</p>
-          ))}
-        </div>
-
-        <figure className="about-photo">
-          <img {...photo('IMG_0593', 2296, 1536)} sizes="(max-width: 767px) 66vw, 50vw" alt="" loading="lazy" />
-        </figure>
-      </HoldUntilLoaded>
-    </>
+      <figure className="about-photo">
+        <img {...photo('IMG_0593', 2296, 1536)} sizes="(max-width: 767px) 66vw, 50vw" alt="" loading="lazy" />
+      </figure>
+    </HoldUntilLoaded>
   );
 }

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { HeaderEmail } from '@/components/HeaderEmail';
 import { SectionLabel } from '@/components/SectionLabel';
 import { TransitionLink } from '@/components/TransitionLink';
 
@@ -15,6 +16,7 @@ export default function SectionLayout({ children }: { children: ReactNode }) {
           </svg>
         </TransitionLink>
         <SectionLabel />
+        <HeaderEmail />
       </header>
       <main className="page">{children}</main>
     </div>
