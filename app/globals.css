@@ -704,13 +704,13 @@ html:has(.gallery) body {
 }
 
 .gallery-arrow svg {
-  width: 0.625rem;
+  width: 1.125rem; /* 18px */
   height: 1.125rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.25;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  fill: currentColor;
+}
+
+.gallery-arrow[data-dir="prev"] svg {
+  scale: -1 1; /* the same arrow, pointing left */
 }
 
 .visually-hidden {

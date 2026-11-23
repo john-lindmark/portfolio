@@ -12,6 +12,15 @@ const SWIPE = 40;
 
 const SIZES = [1280, 2560];
 
+/** Right-pointing arrow (Previous mirrors it in CSS). */
+function Arrow() {
+  return (
+    <svg viewBox="0 0 18 18" aria-hidden="true">
+      <path d="M10.3847 13.2403L9.59419 12.427L12.4586 9.56252H3.375V8.43752H12.4586L9.59419 5.57308L10.3847 4.7597L14.625 9.00002L10.3847 13.2403Z" />
+    </svg>
+  );
+}
+
 function sources(folder: string, { name, width, height }: Photo) {
   const long = Math.max(width, height);
   return SIZES.map((size) => {
@@ -90,10 +99,10 @@ export function Gallery({ set }: { set: GallerySet }) {
       {count > 1 && (
         <>
           <button type="button" className="gallery-arrow" data-dir="prev" aria-label="Previous photo" onClick={() => go(-1)}>
-            <svg viewBox="0 0 10 18" aria-hidden="true"><path d="M9 1 1 9l8 8" /></svg>
+            <Arrow />
           </button>
           <button type="button" className="gallery-arrow" data-dir="next" aria-label="Next photo" onClick={() => go(1)}>
-            <svg viewBox="0 0 10 18" aria-hidden="true"><path d="m1 1 8 8-8 8" /></svg>
+            <Arrow />
           </button>
         </>
       )}
