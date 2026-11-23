@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
+import { Gallery } from '@/components/Gallery';
+import { PARIS } from '@/components/galleries';
 
 export const metadata: Metadata = { title: 'Photo' };
 
 export default function PhotoPage() {
   return (
-    <article className="page-body">
-      <h1 className="page-title">Photo</h1>
-      <p className="page-lede">Coming soon.</p>
-    </article>
+    <>
+      <h1 className="visually-hidden">Photo: Paris</h1>
+      <Gallery set={PARIS} />
+    </>
   );
 }

@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
+import { Gallery } from '@/components/Gallery';
+import { WOOD } from '@/components/galleries';
 
 export const metadata: Metadata = { title: 'Wood' };
 
 export default function WoodPage() {
   return (
-    <article className="page-body">
-      <h1 className="page-title">Wood</h1>
-      <p className="page-lede">Coming soon.</p>
-    </article>
+    <>
+      <h1 className="visually-hidden">Wood</h1>
+      <Gallery set={WOOD} />
+    </>
   );
 }
