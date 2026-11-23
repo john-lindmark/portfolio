@@ -567,14 +567,15 @@ html:has(.stage[data-route="home"]) body {
 }
 
 .site-header {
-  /* Sits in the 32px margin above the page: the mark in the top-left square,
-     the section's name centred. */
+  /* Sits in the 32px margin above the page: the close button in the top-left
+     square, the section's name centred. Pages that scroll pass beneath it. */
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 2;
   height: var(--margin);
+  background: var(--paper);
   pointer-events: none;
 }
 
@@ -605,6 +606,38 @@ html:has(.stage[data-route="home"]) body {
 }
 
 .site-close svg {
+  width: 1.125rem; /* 18px, like every icon */
+  height: 1.125rem;
+  fill: currentColor;
+}
+
+/* Email (About only): the top-right square, mirroring the close button. */
+.site-email {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: var(--margin);
+  height: var(--margin);
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  opacity: 0.4;
+  pointer-events: auto;
+  transition: opacity 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.site-email:hover,
+.site-email:focus-visible {
+  opacity: 1;
+}
+
+.site-email:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: -0.25rem;
+}
+
+.site-email svg {
   width: 1.125rem; /* 18px, like every icon */
   height: 1.125rem;
   fill: currentColor;
@@ -910,10 +943,75 @@ html:has(.gallery) body {
   white-space: nowrap;
 }
 
+/* --------------------------------------------------------------------------
+   About: a photo centred on the opening screen, lines of text spaced well
+   apart, and a closing photo. Photos are half the screen wide, a little more
+   on phones.
+   -------------------------------------------------------------------------- */
+.section:has(.about) .page {
+  padding: 0 var(--margin);
+}
+
+.about {
+  --gap: clamp(5rem, 22vh, 12rem); /* between each line of text */
+  animation: fade 1.2s var(--ease-out) both paused;
+  transition: opacity var(--leave) var(--ease-in);
+}
+
+/* Held on white until the first photo has loaded, then faded in. */
+.section:has(.about:not([data-ready])) {
+  animation-play-state: paused;
+}
+
+.about[data-ready] {
+  animation-play-state: running;
+}
+
+.about-photo {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+}
+
+.about-photo img {
+  display: block;
+  width: 50vw;
+  height: auto;
+}
+
+.about-text {
+  max-width: 48ch; /* about 60 characters a line in DIN (narrower than the "0" ch is based on) */
+  margin: 0 auto;
+  display: grid;
+  gap: var(--gap);
+  text-align: left; /* left-aligned lines, in a column centred on the page */
+  font-size: 1.125rem;
+  line-height: 1.55;
+}
+
+.about-text p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+
+@media (max-width: 767px) {
+  .about-photo img {
+    width: 66vw;
+  }
+
+  .about-text {
+    font-size: 1rem;
+  }
+}
+
 /* Between section pages only the page body changes; heading home the whole
    section goes before the dark comes back. */
 .stage[data-leaving="page"] .page-body,
 .stage[data-leaving="page"] .gallery,
+.stage[data-leaving="page"] .about,
 .stage[data-leaving="section"] .section {
   opacity: 0;
 }
@@ -930,7 +1028,8 @@ html:has(.gallery) body {
   .logo,
   .section,
   .page-body,
-  .gallery {
+  .gallery,
+  .about {
     animation: none;
   }
 
