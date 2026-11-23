@@ -429,7 +429,6 @@ html:has(.stage[data-route="home"]) body {
      (address bar) and on desktops with visible scrollbars. */
   width: 100%;
   height: 100%;
-  animation: fade 6s var(--ease-out) 1s both paused; /* runs once the model loads */
   filter: contrast(1.2);
 }
 
@@ -453,7 +452,9 @@ html:has(.stage[data-route="home"]) body {
 
 .logo {
   margin: 0;
-  animation: fade 6s var(--ease-out) 1s both paused; /* revealed with the statue */
+  /* Comes in once the statue is already emerging from the dark, on an even
+     curve (no sudden start), and finishes with the light. */
+  animation: fade 4.5s cubic-bezier(0.45, 0, 0.55, 1) 3.1s both paused;
 }
 
 .logo img {
@@ -462,9 +463,8 @@ html:has(.stage[data-route="home"]) body {
   height: auto;
 }
 
-/* The reveal (1s pause, then a 6s fade) starts once the model has loaded, so
-   a slow connection never fades in an empty frame. */
-.stage[data-loaded] .statue model-viewer,
+/* The reveal starts once the model has loaded, so a slow connection never
+   brings up an empty frame. The statue's light is raised from JS (Statue.tsx). */
 .stage[data-loaded] .logo {
   animation-play-state: running;
 }
@@ -909,7 +909,6 @@ html:has(.gallery) body {
     transition-duration: 0.2s;
   }
 
-  .statue model-viewer,
   .logo,
   .section,
   .page-body,

@@ -49,6 +49,17 @@ const opacityAt = (level: number) => {
 };
 const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
 
+// The opening: the light starts at nothing and comes up slowly, so the statue
+// emerges from the dark by its light alone. The curve is squared because the
+// eye picks up the first glimmers of light far more than the last steps to
+// full, so the start has to be very gentle.
+const REVEAL_DELAY_MS = 600;
+const REVEAL_MS = 7000;
+const lightAt = (t: number) => {
+  const s = t * t * (3 - 2 * t);
+  return s * s;
+};
+
 export function Statue({
   ref,
   flooded,
@@ -62,6 +73,9 @@ export function Statue({
   const wrap = useRef<HTMLDivElement>(null);
   const viewer = useRef<ModelViewerElement>(null);
   const level = useRef(flooded ? 1 : 0);
+  // Light for the opening reveal, 0..1, times the exposure. Opening on another
+  // page there's no reveal from the dark, so it starts full.
+  const light = useRef(flooded ? 1 : 0);
   const defined = useRef(false);
   const tween = useRef(0); // id of the running tween; a new one cancels the old
   const turning = useRef(false);
@@ -75,7 +89,7 @@ export function Statue({
   const apply = () => {
     const el = viewer.current;
     if (wrap.current) wrap.current.style.opacity = String(opacityAt(level.current));
-    if (el && defined.current) el.exposure = exposureAt(level.current);
+    if (el && defined.current) el.exposure = exposureAt(level.current) * light.current;
   };
 
   const animateTo = (target: number) => {
@@ -150,22 +164,39 @@ export function Statue({
       frame = requestAnimationFrame(step);
     };
 
+    // Bring the light up from nothing. If the page has already moved on (the
+    // statue is flooding out), skip straight to full.
+    const reveal = () => {
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce || level.current > 0) {
+        light.current = 1;
+        apply();
+        return;
+      }
+      let t0: number | undefined;
+      const rise = (now: number) => {
+        if (cancelled) return;
+        t0 ??= now + REVEAL_DELAY_MS;
+        const t = Math.min(Math.max((now - t0) / REVEAL_MS, 0), 1);
+        light.current = level.current > 0 ? 1 : lightAt(t);
+        apply();
+        if (light.current < 1) requestAnimationFrame(rise);
+      };
+      requestAnimationFrame(rise);
+    };
+
     const onLoaded = () => {
-      viewAt(START); // set the opening view before it fades up
+      viewAt(START); // the opening view, set while it's still dark
       loaded.current!.resolve();
       onLoad();
+      reveal();
+      // Reduced motion: hold the statue still.
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) frame = requestAnimationFrame(step);
     };
     // Reveal even if the model fails, so the logo still shows.
     const onError = () => {
       loaded.current!.resolve();
       onLoad();
-    };
-    // Wait for the fade-in to begin before turning, so the opening view
-    // really is the START angle. Reduced motion: hold the statue still.
-    const onReveal = () => {
-      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        frame = requestAnimationFrame(step);
-      }
     };
 
     import('@google/model-viewer').then(async () => {
@@ -181,13 +212,11 @@ export function Statue({
     turning.current = !wrap.current!.hidden;
     el.addEventListener('load', onLoaded, { once: true });
     el.addEventListener('error', onError, { once: true });
-    el.addEventListener('animationstart', onReveal, { once: true });
     return () => {
       cancelled = true;
       cancelAnimationFrame(frame);
       el.removeEventListener('load', onLoaded);
       el.removeEventListener('error', onError);
-      el.removeEventListener('animationstart', onReveal);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -206,7 +235,7 @@ export function Statue({
         max-field-of-view="auto"
         camera-target="-4.3m 35m 4.31m"
         interpolation-decay="0"
-        exposure={String(exposureAt(level.current))}
+        exposure={String(exposureAt(level.current) * light.current)}
         tone-mapping="aces"
         environment-image="/models/key-light.hdr"
       />
