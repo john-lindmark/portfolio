@@ -49,15 +49,15 @@ const opacityAt = (level: number) => {
 };
 const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
 
-// The opening: the light starts at nothing and comes up slowly, so the statue
-// emerges from the dark by its light alone. The curve is squared because the
-// eye picks up the first glimmers of light far more than the last steps to
-// full, so the start has to be very gentle.
-const REVEAL_DELAY_MS = 600;
-const REVEAL_MS = 7000;
+// The opening: the light starts at nothing and comes up, so the statue
+// emerges from the dark by its light alone. The curve eases in (the eye picks
+// up the first glimmers of light far more than the last steps to full), but
+// not so hard that the screen sits black for long.
+const REVEAL_DELAY_MS = 200;
+const REVEAL_MS = 5000;
 const lightAt = (t: number) => {
   const s = t * t * (3 - 2 * t);
-  return s * s;
+  return s ** 1.5;
 };
 
 export function Statue({
