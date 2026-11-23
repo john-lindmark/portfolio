@@ -563,7 +563,6 @@ html:has(.stage[data-route="home"]) body {
   min-height: 100vh;
   min-height: 100dvh;
   animation: fade 1s var(--ease-out) both;
-  transition: opacity var(--leave) var(--ease-in);
 }
 
 .site-header {
@@ -650,7 +649,6 @@ html:has(.stage[data-route="home"]) body {
 .page-body {
   max-width: 48rem;
   animation: rise 1.1s var(--ease-out) 0.15s both;
-  transition: opacity var(--leave) var(--ease-in);
 }
 
 .page-title {
@@ -683,7 +681,6 @@ html:has(.gallery) body {
   position: fixed;
   inset: 0;
   animation: fade 1.2s var(--ease-out) both paused;
-  transition: opacity var(--leave) var(--ease-in);
 }
 
 /* Hold the whole page on white (header included) until the first photo has
@@ -908,7 +905,6 @@ html:has(.gallery) body {
 .about {
   --gap: clamp(5rem, 22vh, 12rem); /* between each line of text */
   animation: fade 1.2s var(--ease-out) both paused;
-  transition: opacity var(--leave) var(--ease-in);
 }
 
 /* Held on white until the first photo has loaded, then faded in. */
@@ -969,7 +965,6 @@ html:has(.gallery) body {
   display: grid;
   place-items: center;
   animation: fade 1.2s var(--ease-out) 0.15s both;
-  transition: opacity var(--leave) var(--ease-in);
 }
 
 .coming-soon p {
@@ -981,13 +976,24 @@ html:has(.gallery) body {
 }
 
 /* Between section pages only the page body changes; heading home the whole
-   section goes before the dark comes back. */
+   section goes before the dark comes back.
+
+   This has to be an animation, not a plain opacity change: these elements
+   fade in with an animation that holds them at full opacity, and a held
+   animation outranks any ordinary style, so the content would sit there and
+   then vanish in one frame. A new animation replaces the old one and fades
+   out from where it left off. */
+@keyframes leave {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
 .stage[data-leaving="page"] .page-body,
 .stage[data-leaving="page"] .gallery,
 .stage[data-leaving="page"] .about,
 .stage[data-leaving="page"] .coming-soon,
 .stage[data-leaving="section"] .section {
-  opacity: 0;
+  animation: leave var(--leave) ease-in-out both;
 }
 
 /* --------------------------------------------------------------------------

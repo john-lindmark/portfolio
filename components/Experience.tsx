@@ -68,7 +68,9 @@ export function Experience({ children }: { children: ReactNode }) {
         await statue.current?.flood();
       } else {
         setLeaving(target === '/' ? 'section' : 'page');
-        await wait(LEAVE_MS);
+        // The fade starts a frame or two after this (once React has
+        // rendered), so allow for that before swapping the page.
+        await wait(LEAVE_MS + 80);
       }
       router.push(href);
     },
