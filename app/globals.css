@@ -567,8 +567,9 @@ html:has(.stage[data-route="home"]) body {
 }
 
 .site-header {
-  /* Sits in the 32px margin above the page: the close button in the top-left
-     square, the section's name centred. Pages that scroll pass beneath it. */
+  /* One header for every section page: a solid strip in the 32px top
+     margin, above the page. Close in the left square, the section's name
+     centred, the page's own action (if any) in the right square. */
   position: fixed;
   top: 0;
   left: 0;
@@ -579,68 +580,52 @@ html:has(.stage[data-route="home"]) body {
   pointer-events: none;
 }
 
-/* Close: back home. Same colours and interaction as the gallery arrows. */
+/* Every icon in the header: a 32px square, an 18px icon, light grey at rest
+   and black on hover or focus. */
+.site-icon {
+  width: var(--margin);
+  height: var(--margin);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  opacity: 0.4;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: opacity 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.site-icon:hover,
+.site-icon:focus-visible {
+  opacity: 1;
+}
+
+.site-icon:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: -0.25rem;
+}
+
+.site-icon svg {
+  width: 1.125rem; /* 18px, like every icon */
+  height: 1.125rem;
+  fill: currentColor;
+}
+
 .site-close {
   position: absolute;
   top: 0;
   left: 0;
-  width: var(--margin);
-  height: var(--margin);
-  display: grid;
-  place-items: center;
-  color: var(--ink);
-  opacity: 0.4;
-  pointer-events: auto;
-  transition: opacity 0.3s ease;
-  -webkit-tap-highlight-color: transparent;
 }
 
-.site-close:hover,
-.site-close:focus-visible {
-  opacity: 1;
-}
-
-.site-close:focus-visible {
-  outline: 1px solid currentColor;
-  outline-offset: -0.25rem;
-}
-
-.site-close svg {
-  width: 1.125rem; /* 18px, like every icon */
-  height: 1.125rem;
-  fill: currentColor;
-}
-
-/* Email (About only): the top-right square, mirroring the close button. */
-.site-email {
+/* The page's own action. */
+.site-action {
   position: absolute;
   top: 0;
   right: 0;
-  width: var(--margin);
-  height: var(--margin);
-  display: grid;
-  place-items: center;
-  color: var(--ink);
-  opacity: 0.4;
-  pointer-events: auto;
-  transition: opacity 0.3s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.site-email:hover,
-.site-email:focus-visible {
-  opacity: 1;
-}
-
-.site-email:focus-visible {
-  outline: 1px solid currentColor;
-  outline-offset: -0.25rem;
-}
-
-.site-email svg {
-  width: 1.125rem; /* 18px, like every icon */
-  height: 1.125rem;
-  fill: currentColor;
+  display: flex;
 }
 
 .site-label {
@@ -813,31 +798,10 @@ html:has(.gallery) body {
   opacity: 1;
 }
 
-/* Top-right corner: switch between one photo and the grid. Same colours and
-   interaction as the arrows. It shows the grid icon over a single photo and
-   the square icon over the grid, cross-fading with the view. */
+/* The gallery's action in the header: the grid icon over a single photo, the
+   square icon over the grid, cross-fading with the view. */
 .gallery-toggle {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 3;
-  width: var(--margin);
-  height: var(--margin);
-  display: grid;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--ink);
-  opacity: 0.4;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.gallery-toggle:hover,
-.gallery-toggle:focus-visible {
-  opacity: 1;
+  --view: 1.2s;
 }
 
 .gallery-toggle span {
@@ -846,20 +810,9 @@ html:has(.gallery) body {
   transition: opacity var(--view) ease-in-out;
 }
 
-.gallery[data-view="single"] .gallery-toggle [data-icon="single"],
-.gallery[data-view="grid"] .gallery-toggle [data-icon="grid"] {
+.gallery-toggle[aria-pressed="false"] [data-icon="single"],
+.gallery-toggle[aria-pressed="true"] [data-icon="grid"] {
   opacity: 0;
-}
-
-.gallery-toggle:focus-visible {
-  outline: 1px solid currentColor;
-  outline-offset: -0.25rem;
-}
-
-.gallery-toggle svg {
-  width: 1.125rem; /* 18px, like every icon */
-  height: 1.125rem;
-  fill: currentColor;
 }
 
 /* Centred in the bottom margin, under the photo. */
@@ -1007,11 +960,32 @@ html:has(.gallery) body {
   }
 }
 
+/* --------------------------------------------------------------------------
+   Design (for now): one small line, centred in the screen
+   -------------------------------------------------------------------------- */
+.coming-soon {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  animation: fade 1.2s var(--ease-out) 0.15s both;
+  transition: opacity var(--leave) var(--ease-in);
+}
+
+.coming-soon p {
+  margin: 0;
+  font-size: 0.75rem; /* 12px, like the caption */
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  opacity: 0.4;
+}
+
 /* Between section pages only the page body changes; heading home the whole
    section goes before the dark comes back. */
 .stage[data-leaving="page"] .page-body,
 .stage[data-leaving="page"] .gallery,
 .stage[data-leaving="page"] .about,
+.stage[data-leaving="page"] .coming-soon,
 .stage[data-leaving="section"] .section {
   opacity: 0;
 }
@@ -1029,7 +1003,8 @@ html:has(.gallery) body {
   .section,
   .page-body,
   .gallery,
-  .about {
+  .about,
+  .coming-soon {
     animation: none;
   }
 
@@ -1042,7 +1017,8 @@ html:has(.gallery) body {
     transition-duration: 0.15s;
   }
 
-  .gallery {
+  .gallery,
+  .gallery-toggle {
     --view: 0.2s;
   }
 }

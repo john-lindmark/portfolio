@@ -4,9 +4,9 @@ export const metadata: Metadata = { title: 'Design' };
 
 export default function DesignPage() {
   return (
-    <article className="page-body">
-      <h1 className="page-title">Design</h1>
-      <p className="page-lede">Coming soon.</p>
-    </article>
+    <div className="coming-soon">
+      <h1 className="visually-hidden">Design</h1>
+      <p>Coming soon</p>
+    </div>
   );
 }
