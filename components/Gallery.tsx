@@ -47,7 +47,7 @@ function sources(folder: string, { name, width, height }: Photo) {
 }
 
 export function Gallery({ set }: { set: GallerySet }) {
-  const { folder, title, photos } = set;
+  const { folder, title, caption, photos } = set;
   const count = photos.length;
   const [index, setIndex] = useState(0);
   const [loaded, setLoaded] = useState<ReadonlySet<string>>(() => new Set());
@@ -171,6 +171,19 @@ export function Gallery({ set }: { set: GallerySet }) {
             ) : null,
           )}
         </div>
+        {caption && (
+          <p className="gallery-caption">
+            {/* Each part stays whole; on a narrow screen it only breaks at a bullet. */}
+            <span>
+              {caption.split(' • ').map((part, i) => (
+                <span key={i}>
+                  {i > 0 && ' • '}
+                  <span className="nowrap">{part}</span>
+                </span>
+              ))}
+            </span>
+          </p>
+        )}
         {count > 1 && (
           <>
             <button type="button" className="gallery-arrow" data-dir="prev" aria-label="Previous photo" onClick={() => go(-1)}>

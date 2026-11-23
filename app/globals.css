@@ -811,6 +811,35 @@ html:has(.gallery) body {
   fill: currentColor;
 }
 
+/* Centred in the bottom margin, under the photo. */
+.gallery-caption .nowrap {
+  white-space: nowrap;
+}
+
+.gallery-caption {
+  position: absolute;
+  left: var(--margin);
+  right: var(--margin);
+  bottom: 0;
+  margin: 0;
+  height: var(--margin);
+  display: grid;
+  align-content: center;
+  font-size: 0.75rem; /* 12px, like the label */
+  line-height: 1.1; /* if it has to wrap, both lines stay inside the margin */
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--ink);
+  opacity: 0.4; /* the same light grey as the icons at rest */
+}
+
+@media (max-width: 767px) {
+  .gallery-caption {
+    font-size: 0.625rem; /* 10px on phones */
+  }
+}
+
 /* Centred on the photo's box, in the margin either side of it. */
 .gallery-arrow {
   position: absolute;
