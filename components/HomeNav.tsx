@@ -8,13 +8,14 @@ import { TransitionLink } from './TransitionLink';
 
 // The links under the logo stay out of sight until they're wanted: with a
 // mouse, while the pointer is over the centre of the screen; on a touch
-// screen, for a few seconds after a tap in the centre. Keyboard focus shows
+// screen, for a few seconds after a tap anywhere. Keyboard focus shows
 // them too (see .home-nav:focus-within in the CSS).
 //
 // Choosing one glides it to the centre, under the logo, as the others fade;
 // only then does the light flood the statue and the page change.
 
-/** Share of the screen's width and height, centred, that reveals the links. */
+/** Share of the screen's width and height, centred, that reveals the links
+ *  to a mouse. (On a touch screen a tap anywhere does.) */
 const ZONE = 0.3;
 /** Slack around the links themselves, so reaching for one never hides them. */
 const SLACK = 24;
@@ -52,7 +53,7 @@ export function HomeNav() {
       if (e.pointerType === 'mouse') show(inZone(e.clientX, e.clientY));
     };
     const onDown = (e: PointerEvent) => {
-      if (e.pointerType === 'mouse' || !inZone(e.clientX, e.clientY)) return;
+      if (e.pointerType === 'mouse') return; // a tap anywhere on the page
       show(true);
       clearTimeout(timer.current);
       timer.current = window.setTimeout(() => show(false), TAP_HOLD_MS);
