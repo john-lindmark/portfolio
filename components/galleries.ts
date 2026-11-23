@@ -27,6 +27,7 @@ export const PARIS: Gallery = {
     { name: 'IMG_1242', width: 3024, height: 2004 },
     { name: 'IMG_1206', width: 2941, height: 1979 },
     { name: 'IMG_1277', width: 2016, height: 3064 },
+    { name: 'IMG_1298', width: 2897, height: 1936 },
     { name: 'IMG_1314', width: 3130, height: 2075 },
     { name: 'IMG_1511', width: 3130, height: 2075 },
   ],
