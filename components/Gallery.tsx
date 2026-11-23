@@ -29,6 +29,15 @@ function GridIcon() {
   );
 }
 
+/** "One photo" icon, shown on the toggle while the grid is open. */
+function SingleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3.5,20.5V3.5h17v17H3.5ZM5,19H19V5H5V19Zm0,0V5V19Z" />
+    </svg>
+  );
+}
+
 /** Right-pointing arrow (Previous mirrors it in CSS). */
 function Arrow() {
   return (
@@ -230,7 +239,12 @@ export function Gallery({ set }: { set: GallerySet }) {
         aria-pressed={grid}
         onClick={() => (grid ? setGrid(false) : openGrid())}
       >
-        <GridIcon />
+        <span data-icon="grid">
+          <GridIcon />
+        </span>
+        <span data-icon="single">
+          <SingleIcon />
+        </span>
       </button>
 
       <p className="visually-hidden" aria-live="polite">

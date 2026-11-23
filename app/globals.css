@@ -781,7 +781,8 @@ html:has(.gallery) body {
 }
 
 /* Top-right corner: switch between one photo and the grid. Same colours and
-   interaction as the arrows; stays dark while the grid is showing. */
+   interaction as the arrows. It shows the grid icon over a single photo and
+   the square icon over the grid, cross-fading with the view. */
 .gallery-toggle {
   position: fixed;
   top: 0;
@@ -802,9 +803,19 @@ html:has(.gallery) body {
 }
 
 .gallery-toggle:hover,
-.gallery-toggle:focus-visible,
-.gallery-toggle[aria-pressed="true"] {
+.gallery-toggle:focus-visible {
   opacity: 1;
+}
+
+.gallery-toggle span {
+  grid-area: 1 / 1; /* both icons in the same spot */
+  display: grid;
+  transition: opacity var(--view) ease-in-out;
+}
+
+.gallery[data-view="single"] .gallery-toggle [data-icon="single"],
+.gallery[data-view="grid"] .gallery-toggle [data-icon="grid"] {
+  opacity: 0;
 }
 
 .gallery-toggle:focus-visible {
