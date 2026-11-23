@@ -1007,11 +1007,32 @@ html:has(.gallery) body {
   }
 }
 
+/* --------------------------------------------------------------------------
+   Design (for now): one small line, centred in the screen
+   -------------------------------------------------------------------------- */
+.coming-soon {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  animation: fade 1.2s var(--ease-out) 0.15s both;
+  transition: opacity var(--leave) var(--ease-in);
+}
+
+.coming-soon p {
+  margin: 0;
+  font-size: 0.75rem; /* 12px, like the caption */
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  opacity: 0.4;
+}
+
 /* Between section pages only the page body changes; heading home the whole
    section goes before the dark comes back. */
 .stage[data-leaving="page"] .page-body,
 .stage[data-leaving="page"] .gallery,
 .stage[data-leaving="page"] .about,
+.stage[data-leaving="page"] .coming-soon,
 .stage[data-leaving="section"] .section {
   opacity: 0;
 }
@@ -1029,7 +1050,8 @@ html:has(.gallery) body {
   .section,
   .page-body,
   .gallery,
-  .about {
+  .about,
+  .coming-soon {
     animation: none;
   }
 
