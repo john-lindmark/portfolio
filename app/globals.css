@@ -657,8 +657,18 @@ html:has(.gallery) body {
 .gallery {
   position: fixed;
   inset: 0;
-  animation: fade 1.1s var(--ease-out) 0.15s both;
+  animation: fade 1.2s var(--ease-out) both paused;
   transition: opacity var(--leave) var(--ease-in);
+}
+
+/* Hold the whole page on white (header included) until the first photo has
+   loaded, then fade it all in together. */
+.section:has(.gallery:not([data-ready])) {
+  animation-play-state: paused;
+}
+
+.gallery[data-ready] {
+  animation-play-state: running;
 }
 
 .gallery-frame {
@@ -680,7 +690,9 @@ html:has(.gallery) body {
   -webkit-touch-callout: none;
 }
 
-.gallery-photo[data-current] {
+/* A photo fades in once it's both chosen and loaded, so a slow one comes up
+   from white rather than drawing in line by line. */
+.gallery-photo[data-current][data-loaded] {
   opacity: 1;
 }
 

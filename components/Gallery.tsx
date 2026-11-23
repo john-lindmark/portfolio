@@ -6,6 +6,10 @@ import type { Gallery as GallerySet, Photo } from './galleries';
 // One photo at a time, fitted inside the screen with a 32px margin. Move
 // through them with the arrow keys, a swipe, or the arrows that sit in the
 // margins either side of the photo, vertically centred.
+//
+// Nothing shows until the first photo has loaded: the page holds on white,
+// then everything fades in together (see .gallery[data-ready] in the CSS).
+// Each later photo also fades in only once it has loaded.
 
 /** Horizontal travel (px) that counts as a swipe. */
 const SWIPE = 40;
@@ -33,6 +37,12 @@ export function Gallery({ set }: { set: GallerySet }) {
   const { folder, title, photos } = set;
   const count = photos.length;
   const [index, setIndex] = useState(0);
+  const [loaded, setLoaded] = useState<ReadonlySet<string>>(() => new Set());
+  const markLoaded = useCallback(
+    (name: string) => setLoaded((done) => (done.has(name) ? done : new Set(done).add(name))),
+    [],
+  );
+  const ready = loaded.has(photos[0].name);
   const go = useCallback((step: number) => setIndex((i) => (i + step + count) % count), [count]);
 
   useEffect(() => {
@@ -62,6 +72,15 @@ export function Gallery({ set }: { set: GallerySet }) {
     if (Math.abs(dx) > SWIPE && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1);
   };
 
+  // A photo that finished loading before React took over the page never fires
+  // onLoad, so check the ones already in the page once on arrival.
+  const frame = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    frame.current?.querySelectorAll<HTMLImageElement>('img[data-name]').forEach((img) => {
+      if (img.complete) markLoaded(img.dataset.name!);
+    });
+  }, [markLoaded]);
+
   // Only the current photo and its neighbours are in the page, so the next
   // one is usually loaded before it's asked for.
   const near = (i: number) => {
@@ -70,8 +89,9 @@ export function Gallery({ set }: { set: GallerySet }) {
   };
 
   return (
-    <div className="gallery" aria-roledescription="carousel" aria-label={title}>
+    <div className="gallery" data-ready={ready || undefined} aria-roledescription="carousel" aria-label={title}>
       <div
+        ref={frame}
         className="gallery-frame"
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
@@ -82,7 +102,11 @@ export function Gallery({ set }: { set: GallerySet }) {
             <img
               key={photo.name}
               className="gallery-photo"
+              data-name={photo.name}
               data-current={i === index || undefined}
+              data-loaded={loaded.has(photo.name) || undefined}
+              onLoad={() => markLoaded(photo.name)}
+              onError={() => markLoaded(photo.name)}
               src={`/images/${folder}/${photo.name}-1280.jpg`}
               srcSet={sources(folder, photo)}
               sizes="calc(100vw - 64px)"

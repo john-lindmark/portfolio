@@ -10,9 +10,9 @@ export const PARIS: Gallery = {
   folder: 'photo',
   title: 'Paris',
   photos: [
+    { name: 'IMG_0846', width: 3130, height: 2075 },
     { name: 'IMG_0571', width: 1532, height: 1015 },
     { name: 'IMG_0825', width: 3130, height: 2075 },
-    { name: 'IMG_0846', width: 3130, height: 2075 },
     { name: 'IMG_0862', width: 3130, height: 2075 },
     { name: 'IMG_0876', width: 1998, height: 3007 },
     { name: 'IMG_0923', width: 3130, height: 2075 },
